@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPIB SYSTEM V.1 BY.ARFWCVK</title>
+    <title>PEMINJAMAN ALAT | DPIB SMKN2TB</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -56,8 +56,6 @@
             z-index: 50; position: sticky; top: 0;
         }
 
-        .main-content-area { position: relative; }
-
         .card-industrial {
             background: var(--bg-panel);
             border: 1px solid #444;
@@ -71,13 +69,6 @@
             border-color: var(--safety-yellow);
             box-shadow: 0 10px 30px rgba(250, 204, 21, 0.1);
         }
-        
-        .card-industrial::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: #444; transition: background 0.3s;
-        }
-        
-        .card-industrial:hover::before { background: var(--safety-yellow); }
 
         input, select, textarea {
             background-color: #151515;
@@ -89,85 +80,49 @@
         input:focus, select:focus {
             outline: none; border-color: var(--safety-yellow); background-color: #1a1a1a;
         }
-        input:disabled, select:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            background-color: #111;
-        }
 
         .btn-submit {
             background-color: var(--tech-blue);
             color: black;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            border: none; border-bottom: 4px solid #0284c7;
-        }
-        .btn-submit:active {
-            transform: translateY(2px); border-bottom: 0; margin-top: 4px;
+            font-weight: 800; text-transform: uppercase; border-bottom: 4px solid #0284c7;
         }
 
         .tech-table th {
             background-color: #333;
             color: var(--safety-yellow);
-            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
             border-bottom: 2px solid var(--safety-yellow);
         }
         .tech-table td { border-bottom: 1px solid #333; padding: 12px; }
 
-        .blink-red { animation: blink-anim 1s infinite; background-color: #ef4444; }
         .blink-green { animation: blink-anim 1.5s infinite; background-color: #22c55e; }
-        .blink-text { animation: blink-text-anim 1s infinite; }
         
         @keyframes blink-anim {
-            0% { opacity: 1; box-shadow: 0 0 5px currentColor; }
-            50% { opacity: 0.4; box-shadow: none; }
-            100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
-        }
-        @keyframes blink-text-anim {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+            50% { opacity: 0.4; }
         }
-
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #555; border-radius: 0; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--safety-yellow); }
 
         .hidden { display: none !important; }
         
-        .corner-bracket {
-            position: absolute; width: 20px; height: 20px;
-            border: 2px solid var(--safety-yellow); pointer-events: none;
-        }
-        .cb-tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-        .cb-br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
-        
-        .industrial-footer { z-index: 50; position: relative; }
-
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         #search-results {
-            position: absolute;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            background: #1a1a1a;
-            border: 1px solid #444;
-            z-index: 100;
-            margin-top: 1px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            position: absolute; width: 100%; max-height: 200px;
+            overflow-y: auto; background: #1a1a1a; border: 1px solid #444;
+            z-index: 100; margin-top: 1px;
         }
-        .search-item {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #333;
-        }
-        .search-item:hover {
-            background-color: var(--tech-blue);
-            color: black;
+        .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #333; }
+        .search-item:hover { background-color: var(--tech-blue); color: black; }
+
+        /* Stepper UI Styles */
+        .step-slide { display: none; }
+        .step-slide.active { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
@@ -179,7 +134,7 @@
         <div class="h-2 w-full caution-stripes"></div>
         <div class="container mx-auto p-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4 w-full md:w-auto border-l-4 border-blue-500 pl-4 bg-white/5 p-2">
-                <img src="logosmk.png" onerror="this.src='https://via.placeholder.com/64?text=SMK'" alt="Logo SMK" class="w-16 h-16 object-contain drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] hover:scale-105 transition-transform duration-300">
+                <img src="logosmk.png" onerror="this.src='https://via.placeholder.com/64?text=SMK'" alt="Logo SMK" class="w-16 h-16 object-contain">
                 <div>
                     <h1 class="text-3xl font-bold text-white tracking-tighter uppercase leading-none">SMKN 2 TERBANGGI BESAR</h1>
                     <div class="flex items-center gap-2 mt-1">
@@ -194,20 +149,21 @@
                     <div class="flex items-center gap-2 mb-1">
                         <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">firebase Status</span>
                         <div class="flex items-center gap-1 bg-black px-2 py-1 rounded border border-green-900">
-                            <div class="w-3 h-3 rounded-full blink-green" id="status-indicator"></div>
-                            <span class="text-green-500 font-bold text-xs" id="status-text">CONNECTED</span>
+                            <div class="w-3 h-3 rounded-full blink-green"></div>
+                            <span class="text-green-500 font-bold text-xs">CONNECTED</span>
                         </div>
                     </div>
                 </div>
                 <div class="text-right border-l border-gray-600 pl-4">
                     <div id="realtime-clock" class="text-xl font-data font-bold text-white leading-none">00:00</div>
-                    <div id="realtime-date" class="text-[10px] text-blue-400 font-bold mt-1 uppercase tracking-widest">...</div>
+                    <div id="realtime-date" class="text-[10px] text-blue-400 font-bold mt-1 uppercase">...</div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow container mx-auto p-6 md:p-10 main-content-area">
+    <main class="flex-grow container mx-auto p-6 md:p-10">
+        <!-- DASHBOARD -->
         <section id="page-dashboard" class="fade-in">
             <div class="flex items-center gap-4 mb-8">
                 <div class="h-8 w-2 bg-yellow-500"></div>
@@ -218,303 +174,215 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 <button onclick="showPage('peminjaman')" class="card-industrial p-8 text-left group">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="bg-blue-900/30 p-4 rounded border border-blue-500/50 group-hover:bg-blue-600 transition-colors">
+                        <div class="bg-blue-900/30 p-4 rounded border border-blue-500/50 group-hover:bg-blue-600">
                             <i class="fa-solid fa-pen-ruler text-4xl text-blue-400 group-hover:text-white"></i>
                         </div>
-                        <span class="text-4xl font-bold text-gray-700 group-hover:text-white/20 transition-colors">01</span>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400">PEMINJAMAN ALAT</h3>
-                    <p class="text-sm text-gray-400">Input data peminjaman baru.</p>
-                    <div class="mt-4 w-8 h-1 bg-blue-500 group-hover:w-full transition-all duration-500"></div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400 uppercase">Peminjaman Alat</h3>
+                    <p class="text-sm text-gray-400">Input data peminjaman baru via Stepper UI.</p>
                 </button>
-
                 <button onclick="showPage('pengembalian')" class="card-industrial p-8 text-left group">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="bg-yellow-900/30 p-4 rounded border border-yellow-500/50 group-hover:bg-yellow-600 transition-colors">
+                        <div class="bg-yellow-900/30 p-4 rounded border border-yellow-500/50 group-hover:bg-yellow-600">
                             <i class="fa-solid fa-clipboard-check text-4xl text-yellow-400 group-hover:text-white"></i>
                         </div>
-                        <span class="text-4xl font-bold text-gray-700 group-hover:text-white/20 transition-colors">02</span>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400">PENGEMBALIAN ALAT</h3>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400 uppercase">Pengembalian Alat</h3>
                     <p class="text-sm text-gray-400">Monitoring dan checklist pengembalian.</p>
-                    <div class="mt-4 w-8 h-1 bg-yellow-500 group-hover:w-full transition-all duration-500"></div>
                 </button>
-
                 <button onclick="showPage('pemakaian')" class="card-industrial p-8 text-left group">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="bg-gray-800 p-4 rounded border border-gray-500 group-hover:bg-gray-600 transition-colors">
+                        <div class="bg-gray-800 p-4 rounded border border-gray-500 group-hover:bg-gray-600">
                             <i class="fa-solid fa-file-csv text-4xl text-gray-400 group-hover:text-white"></i>
                         </div>
-                        <span class="text-4xl font-bold text-gray-700 group-hover:text-white/20 transition-colors">03</span>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400">REKAP DATA (ADMIN ONLY)</h3>
-                    <p class="text-sm text-gray-400"></p>
-                    <div class="mt-4 w-8 h-1 bg-gray-500 group-hover:w-full transition-all duration-500"></div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-400 uppercase">Rekap Data</h3>
+                    <p class="text-sm text-gray-400">Admin access area.</p>
                 </button>
             </div>
         </section>
 
-        <section id="page-peminjaman" class="hidden max-w-4xl mx-auto fade-in">
+        <!-- PAGE PEMINJAMAN -->
+        <section id="page-peminjaman" class="hidden max-w-6xl mx-auto fade-in">
             <div class="flex justify-between items-center mb-6">
-                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-400 hover:text-white transition font-bold uppercase text-sm">
+                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-400 hover:text-white font-bold uppercase text-sm">
                     <i class="fa-solid fa-arrow-left bg-gray-800 p-2 rounded"></i> Kembali
                 </button>
                 <div class="text-right">
-                    <h2 class="text-2xl font-bold text-blue-400 uppercase">Form Peminjaman Alat</h2>
-                    <p class="text-xs text-gray-500">INPUT DATA PEMINJAM</p>
+                    <h2 class="text-2xl font-bold text-blue-400 uppercase">Form Peminjaman</h2>
+                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">SISTEM POP-UP STEPPER ACTIVE</p>
                 </div>
             </div>
 
-            <div class="bg-[#202024] p-8 shadow-2xl border-t-4 border-blue-500 relative">
-                <div class="absolute top-2 left-2 text-gray-600"><i class="fa-solid fa-xmark"></i></div>
-                <div class="absolute top-2 right-2 text-gray-600"><i class="fa-solid fa-xmark"></i></div>
-
-                <form id="form-pinjam">
-                    <div class="bg-black/30 p-4 mb-6 border border-gray-700 flex items-center gap-4">
-                        <i class="fa-regular fa-calendar-days text-blue-500 text-xl"></i>
-                        <div class="flex-grow">
-                            <label class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Tanggal Peminjaman</label>
-                            <input type="date" id="input-tanggal" required class="w-full bg-transparent border-none text-xl font-bold text-white p-0 focus:ring-0 h-auto">
-                        </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Trigger Search -->
+                <div class="lg:col-span-12 bg-[#202024] p-8 border-t-4 border-blue-500">
+                    <label class="block text-xs font-bold text-blue-400 mb-2 uppercase tracking-widest">Cari Nama Peminjam</label>
+                    <div class="relative max-w-2xl">
+                        <input type="text" id="search-nama" placeholder="[Ketik nama siswa]" class="w-full p-4 text-lg bg-black border-l-8 border-yellow-500 uppercase font-black tracking-tighter">
+                        <div id="search-results" class="hidden shadow-2xl"></div>
                     </div>
+                    <p class="text-[10px] text-gray-500 mt-3 italic uppercase">Sistem akan otomatis membuka jendela input setelah nama dipilih.</p>
+                </div>
 
-                    <div class="mb-6 relative">
-                        <label class="block text-xs font-bold text-gray-400 mb-2 uppercase"><i class="fa-solid fa-magnifying-glass mr-1 text-yellow-500"></i> Cari Nama Peminjam (Otomatis)</label>
-                        <input type="text" id="search-nama" placeholder="Ketik nama untuk mencari..." class="w-full p-3 text-sm bg-gray-900 border-l-4 border-yellow-500 uppercase font-bold">
-                        <div id="search-results" class="hidden"></div>
+                <!-- Antrean List -->
+                <div class="lg:col-span-12 bg-[#202024] flex flex-col border-t-4 border-yellow-500 mt-6">
+                    <div class="p-4 border-b border-gray-700 bg-black/20 flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-yellow-500 uppercase flex items-center gap-2">
+                            <i class="fa-solid fa-list-check"></i> LIST DATA READY (<span id="count-antrean">0</span>)
+                        </h3>
+                        <button onclick="clearAntrean()" class="text-[10px] text-red-400 font-bold uppercase underline">Clear All Data</button>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 mb-2 uppercase"><i class="fa-solid fa-layer-group mr-1 text-yellow-500"></i> KELAS </label>
-                            <select id="input-kelas" required disabled class="w-full p-3 text-sm">
-                                <option value="">-- KELAS --</option>
-                                <option value="X">KELAS X</option>
-                                <option value="XI">KELAS XI</option>
-                                <option value="XII">KELAS XII</option>
-                                <option value="Lainnya">LAINNYA / GURU / STAF</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 mb-2 uppercase"><i class="fa-solid fa-bezier-curve mr-1 text-yellow-500"></i> JURUSAN </label>
-                            <select id="input-jurusan" required disabled class="w-full p-3 text-sm">
-                                <option value="">-- JURUSAN --</option>
-                                <option value="DPIB-1">DPIB 1</option>
-                                <option value="DPIB-2">DPIB 2</option>
-                                <option value="Lainnya">LAINNYA / UMUM</option>
-                            </select>
-                        </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full tech-table font-data text-xs">
+                            <thead>
+                                <tr class="bg-black">
+                                    <th class="p-3 text-left">Peminjam</th>
+                                    <th class="p-3 text-left">Detail Alat</th>
+                                    <th class="p-3 text-center">Kode</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-antrean-body" class="divide-y divide-gray-800">
+                                <tr><td colspan="4" class="p-10 text-center text-gray-600 italic">Belum ada data di antrean.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
-
-                    <div class="mb-6">
-                        <label class="block text-xs font-bold text-gray-400 mb-2 uppercase"><i class="fa-solid fa-user-graduate mr-1 text-yellow-500"></i> Nama Peminjam (Final)</label>
-                        <input type="text" id="input-nama-final" placeholder="Nama terpilih akan muncul di sini..." required disabled class="w-full p-3 text-sm bg-[#151515] text-white border-l-4 border-tech-blue uppercase font-bold">
+                    <div class="p-4 bg-black/40">
+                        <button type="button" id="btn-save-firebase" disabled class="btn-submit w-full py-4 opacity-50 cursor-not-allowed flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> SIMPAN KE DATABASE
+                        </button>
                     </div>
-
-                    <div class="h-px bg-gray-700 w-full mb-6 border-t border-dashed border-gray-600"></div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8">
-                        <div class="md:col-span-6">
-                            <label class="block text-xs font-bold text-blue-400 mb-2 uppercase">Nama Alat / Barang</label>
-                            <select id="input-alat" onchange="cekAlatLainnya(this)" required class="w-full p-3 font-bold text-white bg-blue-900/20 border-blue-500">
-                                <option value="">-- PILIH ALAT --</option>
-                                <option value="Penggaris Segitiga">Penggaris Segitiga</option>
-                                <option value="Kalkulator Dexin">Kalkulator Dexin</option>
-                                <option value="Kalkulator Kawachi">Kalkulator Kawachi</option>
-                                <option value="Lainnya">Lainnya (Isi Manual)</option>
-                            </select>
-                            <input type="text" id="input-alat-lain" placeholder="Ketik nama alat spesifik..." class="hidden w-full mt-2 p-3 border-yellow-500 text-yellow-400">
-                        </div>
-
-                        <div class="md:col-span-3">
-                            <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">Jumlah</label>
-                            <select id="input-jumlah" onchange="cekJumlahLainnya(this)" required class="w-full p-3 text-center">
-                                <option value="">-- JUMLAH --</option>
-                                <option value="1 Unit">1 Unit</option>
-                                <option value="2 Unit">2 Unit</option>
-                                <option value="3 Unit">3 Unit</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                            <input type="number" id="input-jumlah-lain" min="1" placeholder="0" class="hidden w-full mt-2 p-3 text-center border-yellow-500 text-yellow-400 font-bold bg-[#151515] border border-l-[3px] border-l-yellow-500 outline-none">
-                        </div>
-
-                        <div class="md:col-span-3">
-                            <label class="block text-xs font-bold text-gray-400 mb-2 uppercase">No. Alat / Kode</label>
-                            <input type="text" id="input-kode" placeholder="-- TULIS NO. / KODE ALAT --" required class="w-full p-3 text-center font-bold uppercase text-yellow-500">
-                        </div>
-                    </div>
-
-                    <button type="button" id="btn-save-firebase" class="btn-submit w-full py-4 rounded text-lg shadow-lg hover:bg-blue-400 transition flex justify-center items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> SIMPAN DATA
-                    </button>
-                </form>
+                </div>
             </div>
         </section>
 
+        <!-- PAGE PENGEMBALIAN -->
         <section id="page-pengembalian" class="hidden max-w-6xl mx-auto fade-in">
-            <div class="flex justify-between items-center mb-6">
-                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-400 hover:text-white transition font-bold uppercase text-sm">
+             <div class="flex justify-between items-center mb-6">
+                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-400 hover:text-white font-bold uppercase text-sm">
                     <i class="fa-solid fa-arrow-left bg-gray-800 p-2 rounded"></i> KEMBALI
                 </button>
-                <h2 class="text-2xl font-bold text-yellow-500 uppercase">FORM PENGEMBALIAN ALAT</h2>
+                <h2 class="text-2xl font-bold text-yellow-500 uppercase">PENGEMBALIAN</h2>
             </div>
-
-            <div class="bg-[#202024] border border-gray-700 p-1 relative">
-                <div class="corner-bracket cb-tl"></div>
-                <div class="corner-bracket cb-br"></div>
-
-                <div class="bg-black/50 p-2 flex flex-col md:flex-row justify-between items-center border-b border-gray-700 mb-4 gap-3">
-                    <div class="flex items-center gap-4 w-full md:w-auto">
-                         <span class="text-xs font-mono text-gray-400 ml-2 hidden md:inline">> FIRESTORE_STREAM: <span class="text-green-500 blink-text">LIVE</span></span>
-                    </div>
-
-                    <div class="flex items-center gap-2 w-full md:w-auto">
-                        <div class="relative flex-grow md:flex-grow-0">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-500">
-                                <i class="fa-solid fa-search"></i>
-                            </span>
-                            <input type="text" id="cari-kode" placeholder="Cari Kode Alat..." 
-                                class="w-full md:w-64 bg-gray-800 border border-gray-600 text-white text-xs py-2 pl-8 pr-2 rounded focus:border-yellow-500 outline-none uppercase font-mono">
-                        </div>
-                    </div>
+            <div class="bg-[#202024] border border-gray-700 p-1">
+                <div class="bg-black/50 p-2 flex justify-between items-center border-b border-gray-700 mb-4">
+                    <input type="text" id="cari-kode" placeholder="Filter Kode..." class="bg-gray-800 text-xs p-2 rounded uppercase">
                 </div>
-
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm tech-table font-data">
+                    <table class="w-full text-left text-xs tech-table font-data">
                         <thead>
                             <tr>
                                 <th class="w-10 text-center"><i class="fa-regular fa-square-check"></i></th>
                                 <th>Tanggal</th>
                                 <th>Nama Peminjam</th>
-                                <th>Detail Alat</th>
+                                <th>Alat</th>
                                 <th class="text-center">Kode</th>
                                 <th class="text-center">Status</th>
                             </tr>
                         </thead>
-                        <tbody id="tabel-peminjaman" class="text-gray-300"></tbody>
+                        <tbody id="tabel-peminjaman"></tbody>
                     </table>
                 </div>
-                
-                <div id="loading-indicator" class="text-center py-8 text-yellow-500">
-                    <i class="fa-solid fa-circle-notch fa-spin text-3xl"></i>
-                    <p class="text-xs mt-2 uppercase">Syncing with Cloud...</p>
-                </div>
-                
-                <div id="error-message" class="text-center py-8 text-red-500 hidden">
-                    <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
-                    <p class="text-xs mt-2 uppercase font-bold">KONEKSI DATABASE TERPUTUS / ERROR</p>
-                    <p class="text-[10px] text-gray-500" id="error-text-detail">Cek Konsol Browser untuk detail.</p>
-                </div>
-
-                <div id="empty-state" class="text-center py-16 text-gray-600 hidden">
-                    <i class="fa-solid fa-clipboard-check text-6xl mb-4 opacity-30"></i>
-                    <p class="text-lg font-bold uppercase">Tidak ada peminjaman aktif</p>
-                </div>
-
                 <div class="mt-8 bg-gray-800 p-6 border-t-4 border-yellow-500">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="fa-solid fa-shield-halved text-yellow-500"></i>
-                        <h3 class="font-bold text-white uppercase">konfirmasi Pengembalian (Admin Only)</h3>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                        <div class="md:col-span-4">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase mb-1">Kondisi Barang Saat dikembalikan</label>
-                            <select id="return-condition" class="w-full p-2 bg-black border border-gray-600 text-white">
-                                <option value="OK">OK</option>
-                                <option value="NG">NG (GANTI RUGI)</option>
-                                <option value="HILANG">HILANG (GANTI RUGI)</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-4">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase mb-1">MASUKAN PASSWORD</label>
-                            <input type="password" id="admin-password" placeholder="INPUT PASSWORD" class="w-full p-2 bg-black border border-gray-600 text-center">
-                        </div>
-                        <div class="md:col-span-4">
-                            <button id="btn-return-firebase" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 px-4 uppercase shadow-lg border-b-4 border-yellow-700 active:border-0 active:mt-1 transition-all">
-                                <i class="fa-solid fa-check mr-2"></i> Proses Pengembalian
-                            </button>
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <select id="return-condition" class="w-full p-3 bg-black border border-gray-600 text-white">
+                            <option value="OK">KONDISI: OK</option>
+                            <option value="NG">KONDISI: RUSAK (NG)</option>
+                            <option value="HILANG">KONDISI: HILANG</option>
+                        </select>
+                        <input type="password" id="admin-password" placeholder="PASSWORD ADMIN" class="w-full p-3 bg-black border border-gray-600 text-center">
+                        <button id="btn-return-firebase" class="w-full bg-yellow-500 text-black font-black py-3 uppercase">PROSES KEMBALI</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="page-pemakaian" class="hidden max-w-4xl mx-auto pt-10 text-center fade-in">
-            <button onclick="showPage('dashboard')" class="mb-8 text-gray-400 hover:text-white font-bold uppercase text-sm">
-                <i class="fa-solid fa-arrow-left mr-2"></i> Dashboard
-            </button>
-            <div class="caution-stripes h-4 w-full mb-0"></div>
-            
-            <div class="bg-gray-800 p-12 border border-gray-600 shadow-2xl relative">
-                <div id="admin-lock-screen" class="w-full">
-                    <i class="fa-solid fa-lock text-6xl text-red-500 mb-6"></i>
-                    <h2 class="text-3xl font-bold text-white mb-2 uppercase">RESTRICTED ACCESS</h2>
-                    <p class="text-gray-400 mb-6">Area ini berisi data sensitif seluruh peminjaman siswa.<br>Silakan masukan kode otorisasi.</p>
-                    
-                    <div class="max-w-xs mx-auto flex gap-2">
-                        <input type="password" id="download-auth-pass" placeholder="Password Admin..." class="w-full p-3 text-center bg-black border border-gray-500 text-white">
-                        <button onclick="verifyAdminDownload()" class="bg-red-600 hover:bg-red-500 text-white px-4 font-bold border border-red-800">
-                            <i class="fa-solid fa-key"></i>
-                        </button>
-                    </div>
+        <!-- PAGE REKAP -->
+        <section id="page-pemakaian" class="hidden max-w-4xl mx-auto pt-10 text-center">
+             <button onclick="showPage('dashboard')" class="mb-8 text-gray-400 hover:text-white font-bold uppercase text-sm">Kembali</button>
+             <div class="bg-gray-800 p-12 border border-gray-600">
+                <div id="admin-lock-screen">
+                    <i class="fa-solid fa-lock text-5xl text-red-500 mb-4"></i>
+                    <h2 class="text-2xl font-bold text-white mb-6 uppercase">RESTRICTED AREA</h2>
+                    <input type="password" id="download-auth-pass" placeholder="Password..." class="p-3 bg-black border border-gray-500 text-white mb-4 block mx-auto">
+                    <button onclick="verifyAdminDownload()" class="bg-red-600 text-white px-8 py-2 font-bold uppercase">Unlock</button>
                 </div>
-
-                <div id="admin-download-area" class="hidden fade-in">
-                    <div class="absolute top-4 right-4 text-green-500 text-xs font-mono border border-green-500 px-2 py-1">ACCESS GRANTED</div>
-                    <i class="fa-solid fa-file-csv text-7xl text-green-500 mb-6"></i>
-                    <h2 class="text-3xl font-bold text-white mb-2 uppercase">DATABASE EXPORT</h2>
-                    <p class="text-gray-400 mb-6">Data disimpan di Cloud Firestore. Anda dapat mengunduh seluruh riwayat ke format Excel/CSV.</p>
-                    <button onclick="downloadLaporanCSV()" class="inline-block px-8 py-4 bg-green-700 hover:bg-green-600 text-white font-bold rounded shadow-lg transition-all border border-green-500">
-                        <i class="fa-solid fa-download mr-2"></i> DOWNLOAD REKAP (.CSV)
-                    </button>
+                <div id="admin-download-area" class="hidden">
+                    <i class="fa-solid fa-file-csv text-6xl text-green-500 mb-4"></i>
+                    <button onclick="downloadLaporanCSV()" class="px-8 py-4 bg-green-700 text-white font-bold uppercase">Download CSV Rekap</button>
                 </div>
-            </div>
-            <div class="caution-stripes h-4 w-full mt-0"></div>
+             </div>
         </section>
     </main>
 
-    <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
-        <div class="bg-black/80 absolute inset-0 backdrop-blur-sm"></div>
-        <div class="relative z-10 w-full max-w-md bg-[#222] border-2 border-white shadow-[0_0_30px_rgba(0,0,0,0.5)] transform scale-95 opacity-0 transition-all duration-300" id="modal-content">
-            <div class="bg-white p-3 flex justify-between items-center" id="modal-header-bg">
-                <h3 id="modal-title" class="text-black font-bold uppercase text-lg tracking-wider">NOTIFIKASI</h3>
-                <i id="modal-icon" class="text-2xl text-black"></i>
+    <!-- STEPPER MODAL (NEW) -->
+    <div id="stepper-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-black/90 absolute inset-0 backdrop-blur-md"></div>
+        <div class="relative z-10 w-full max-w-lg bg-[#1a1a1a] border-2 border-blue-500 shadow-[0_0_50px_rgba(14,165,233,0.3)]">
+            <div class="caution-stripes h-2 w-full"></div>
+            <div class="p-6">
+                <!-- Identitas Info -->
+                <div id="step-identity-display" class="mb-6 border-l-4 border-yellow-500 pl-4 bg-white/5 p-3">
+                    <h4 id="display-nama" class="text-xl font-black text-white uppercase leading-none">-</h4>
+                    <p id="display-kelas-jurusan" class="text-[10px] text-blue-400 font-bold tracking-widest mt-1">-</p>
+                </div>
+
+                <!-- SLIDE 1: IDENTITAS (Hanya jika manual) -->
+                <div id="step-1" class="step-slide">
+                    <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase italic">Data Identitas Manual</h3>
+                    <input type="text" id="manual-nama" placeholder="NAMA" class="w-full p-3 mb-3 uppercase">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="manual-kelas" placeholder="KELAS / JURUSAN" class="p-3 uppercase">
+                        <input type="text" id="manual-jurusan" placeholder="DEPARTEMEN / AREA" class="p-3 uppercase">
+                    </div>
+                    <button onclick="nextStep(2)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut Pilih Alat</button>
+                </div>
+
+                <!-- SLIDE 2: PILIH ALAT -->
+                <div id="step-2" class="step-slide">
+                    <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Pilih Alat Inventaris</h3>
+                    <div class="grid grid-cols-2 gap-2 mb-4">
+                        <button onclick="selectAlat('PENGGARIS')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Penggaris</button>
+                        <button onclick="selectAlat('KALKULATOR')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Kalkulator</button>
+                        <button onclick="selectAlat('MOUSE')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Mouse</button>
+                        <button onclick="selectAlat('KEYBOARD')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Keyboard</button>
+                    </div>
+                    <input type="text" id="manual-alat" placeholder="Input nama alat lainnya" class="w-full p-3 uppercase text-sm border-yellow-500">
+                    <button onclick="nextStep(3)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut ke Detail</button>
+                </div>
+
+                <!-- SLIDE 3: JUMLAH & KODE -->
+                <div id="step-3" class="step-slide">
+                    <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Detail Peminjaman</h3>
+                    <div class="mb-4">
+                        <label class="text-[10px] font-bold text-gray-500 block mb-1">JUMLAH ALAT</label>
+                        <input type="number" id="stepper-jumlah" value="1" min="1" class="w-full p-4 text-center text-xl font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 block mb-1">NO. KODE ALAT</label>
+                        <input type="text" id="stepper-kode" placeholder="[NOMOR / KODE ALAT]" class="w-full p-4 text-center text-xl font-bold border-yellow-500 text-yellow-400 uppercase">
+                    </div>
+                    <button onclick="addToQueue()" class="w-full mt-6 bg-yellow-500 py-4 font-black text-black uppercase text-lg">TAMBAH KE DAFTAR</button>
+                </div>
             </div>
-            <div class="p-6 text-center">
-                <p id="modal-message" class="text-gray-300 text-sm mb-6 font-data leading-relaxed">Pesan...</p>
-                <button onclick="closeModal()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 w-full uppercase tracking-widest border border-gray-500">TUTUP</button>
-            </div>
-            <div class="h-2 w-full caution-stripes"></div>
+            <button onclick="closeStepper()" class="absolute -top-4 -right-4 bg-red-600 w-10 h-10 rounded-full text-white flex items-center justify-center border-4 border-[#1a1a1a]"><i class="fa-solid fa-xmark"></i></button>
         </div>
     </div>
 
-    <footer class="bg-[#111] border-t-4 border-blue-600 mt-auto industrial-footer">
-        <div class="bg-black border-b border-gray-800 font-data text-xs py-3 px-4 flex items-center gap-4 overflow-hidden shadow-inner relative z-20 h-10">
-            <div class="flex items-center gap-3 shrink-0 text-gray-400 z-10 bg-black pr-2 border-r border-gray-800">
-                <span>[NETWORK:<span class="text-green-500 font-bold">ONLINE</span>]</span>
-                <span>[SRV:<span class="text-blue-500 font-bold">STANDBY</span>]</span>
-            </div>
-            <div class="flex-grow text-gray-400 overflow-hidden whitespace-nowrap flex items-center">
-                <span class="text-yellow-500 mr-2">></span>
-                <span id="terminal-text" class="text-gray-300 font-bold tracking-wide"></span>
-                <span class="animate-pulse text-yellow-500 font-bold ml-1">_</span>
-            </div>
+    <!-- MODAL NOTIF -->
+    <div id="custom-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4">
+        <div class="bg-black/80 absolute inset-0"></div>
+        <div class="relative z-10 w-full max-w-sm bg-[#222] border-2 border-white p-6 text-center">
+            <h3 id="modal-title" class="font-bold text-white mb-2 uppercase"></h3>
+            <p id="modal-message" class="text-gray-400 text-sm mb-6"></p>
+            <button onclick="closeModal()" class="w-full bg-white text-black py-2 font-bold uppercase">Tutup</button>
         </div>
-        <div class="container mx-auto py-6 px-4 flex justify-center items-center gap-4">
-            <div class="flex flex-col items-center">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 bg-yellow-500 animate-pulse border border-white"></div>
-                    <p class="text-white font-bold text-lg tracking-wider">©DIPB SYSTEM <span class="text-blue-500">V.1-2025</span></p>
-                </div>
-                <p class="text-gray-500 text-xs font-bold uppercase mt-1">Design & development by: Arf Wicvk</p>
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, where, orderBy, getDocs } 
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, query, where, writeBatch, setDoc, getDocs, orderBy } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -526,216 +394,502 @@
           appId: "1:444034231596:web:087a500225bffabe7d5089"
         };
 
-        let app, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            console.log("Firebase Connected");
-        } catch (error) {
-            console.error("Firebase Error:", error);
-        }
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        window.db = db; 
+        // Global DB Functions
+        window.db = db;
+        window.writeBatch = writeBatch;
         window.collection = collection;
-        window.addDoc = addDoc;
-        window.onSnapshot = onSnapshot;
         window.doc = doc;
-        window.updateDoc = updateDoc;
-        window.query = query;
-        window.where = where;
-        window.orderBy = orderBy;
+        window.setDoc = setDoc;
         window.getDocs = getDocs;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.updateDoc = updateDoc;
 
+        // Data Siswa
         window.databaseSiswa = {
-            "X-DPIB-1": ["Adam Ilham Darmawan", "Agnesya Alfiani", "Agung Satria Utama", "Agustina", "Ainul Mardiah", "Aldiano Afandy", "Ali Fahmi Setioso", "Amelia Bunga Safitri", "Andika Dwi Saputra", "Ari Nanda Fefrian", "Bayu Ahmad Nur Iman", "Chandra Wira Atmaja", "Daffa Sauqi", "Deby Orlando Pratama", "Dino Afria", "Dzaidan Akmal Pratama", "Eka Setyawan", "Elsya Alfiani", "Fadlan Nabil Rifqi Syafiq", "Fharel Hardinata M. Nur", "Handy Rydho Wijaya", "Ika Agustina", "Intan Nuraini", "Jana Suryana", "Kharisma Dinda Ramadhani", "M. Luthfi Maulana", "Muhammad Fadli", "Muhammad Haiqal", "Nesya Nandini", "Nuur Miftahul Jauhar", "Putri Adelina Ferani", "Putri Tansyier Dewi", "Rafa Drimaheza", "Rayhan Raynanda", "Rehan Adi Prasetio", "Riko Alfanando", "Shafira Nur Azizah", "Vika Herawati"],
-            "X-DPIB-2": ["Adonis Nandhito", "Agustian Fernando", "Aiko Alvizaudri Kenatra", "Akhmad Rizky Murtado", "Alfino Pramanta", "Alifah Kusuma Wardani", "Andhika Aziz Pratama", "Aretha Zhie Zhie S", "Aulia Febriyana", "Cahaya Putri Mariona", "Chila Viecho Nurhidayah", "Dava Danil Paresa", "Dika Saputra", "Diva Aprilia", "Eka Putra Wijaya", "Ellas Tirta Savana", "Faiz Al Qorni Hakim", "Gilang Setia An", "Hafizah Setia Ramadani", "Henky Triyan Syah", "Ilham Dinata", "Jaenal Sobirin", "Kayla Kania Alviona", "Luthfi Hanif", "Mela Novalia", "Muhammad Fahri", "Muhammad Rafly Al-Fahrezy", "Nino Oktaviano Saputra", "Oschar Parulian Tampubolon", "Putri Febriani", "Rahmad Ramadan", "Ramda Wirakka Pratama", "Refal Firmansyah", "Rika Saputri", "Selfi Mediari A. Zyahra", "Tholib Abdul Alim", "Zahra Amelia"],
-            "XI-DPIB-1": ["Abi Dwi Aryansyah", "Adrian July Saputra", "Agnes Fidela Asmara", "Ahmad Faqih Huntelaar", "Ainin Diniya Haqqi", "Alvin Andry Pratama", "Anggia Faulina", "Azzahra Kayla Nuranisa", "Bagus Tri Pujianto", "Celvin Niko Pratama", "Dani Firmansyah", "Dika Pratama", "Fajar Dzulkarnen", "Gevhandra Milando", "Hendra Kurniawan", "Intan Baro Maharani", "Keysia Putri Handayani", "Marcel Aditya", "Meliana Tista", "Muhamad Farel Raditya", "Muhammad Agil Saputra", "Muhammad Asfa Aldika", "Muhammad Haffiyan Zasin", "Ningrum Nur Annisa", "Raffi Galih Prasetyo", "Raka Reskiaditia Haltara", "Rio Zet Miko", "Syamsul Anwar Arafi"],
-            "XI-DPIB-2": ["Adzkia Purnomo", "Aisya Azzahra Sintia", "Andi Setiawan", "Arba Firmansyah", "Arda Jepriyan Syach", "Aziz Maulana Ishak", "Dikky Dwi Wibowo", "Fadli Azka Ramandika", "Fahriza Riswandi", "Farel Putra Ramadhan", "Inka Nabila", "Inna Raffa Firizku Subing", "Muhammad Iqbal Maulana", "Muhammad Nanda Arya Reza", "Muhammad Syahrul Munir", "Muhammad Taufiquzziyad", "Naifa Mezzaluna Ramadhani", "Noval Khoirul Efendi", "Pandu Adjie Dinata", "Refi Artikasari", "Riska Rahmawardani", "Rizky Aditya", "Rizky Pratama", "Siti Rahmawati", "Sultan Pasha Altafa", "Tirta Nur Khoirudin", "Veny Ferawati", "Yusuf Rama Winata", "Zhulfa Anisa Rayikinanti"],
-            "XII-DPIB-1": ["Agna Khoirul Nisa", "Agus Maulana Ikhsan", "All Shella Vierranitha Agliska", "Aprilia Dwi Lestari", "Az Zahra Annisa", "Cahaya Wulandari", "Citra Asti Mutia", "Claudia Dhiza Sheza Malika", "Daffa Khusnureza", "Damar Dwi Bimandika", "Dini Rahmadani", "Duwi Nofi Wulandari", "Egi Listianti", "Finka Indah Anggraini", "Herliza Awanda Octara", "Keysha Allifia Khairunisa", "Larasati Cahyaning Putri Hernadi", "M. Pasya Fauzi Sopian", "Muhamad Lutfi Pratama", "Muhammad Ihcan Ilham", "Muhammad Rizky", "Nadia Nurul Afifa", "Nawang Aufa Qurota Akyun", "Qurrota A'yun", "Rafi Debi Asmara", "Raditya Febrianza Rizantha", "Raihan Hakim", "Reno Andre Saputra", "Reza Nurul Safitri", "Safira", "Virgiawan Listianto", "Wanti Rahmadani", "Widya Fadilla Albadri"],
-            "XII-DPIB-2": ["Adika Ananta Ramli", "Adly Yovi Saputra", "Agam Prasetia Jaya", "Alif Dwi Kuncoro", "Alifia Aulia Amanda", "Andrea Dwi Ferliansyah", "Aria Agung Prasetio", "Bayhaqqi Rafli", "Bayu Catur Wijanarko", "Dimas Muhammad Afrizal", "Duwi Santika", "Ester Romauli Simatupang", "Fibri Lyiana", "Galang Satria Putra", "Galang Saputra", "Glend Andika Pratama", "Gusti Sona Zulyan Pratama", "Hayden Rio Saputra", "Iqbal Ferdiansyah", "Lucky Hermawan", "Maulana Abiyyu Faqih", "Muhamad Arif Aldo Maulana", "Muhammad Fani Praja Mandala", "Muhammad Raihan Wirayuda", "Muhammad Risky Syaputra", "Nabila", "Nasya Rahmawati", "Nesya Kurnia Sari", "Novita Sari", "Pirmansyah", "Ramadhan Erlang Khadafi", "Revan Sebastian Belandri", "Romli Affandi", "Siska Anggraini", "Yunita Agustina"]
+            "X-DPIB-1": [
+  "ADAM ILHAM DARMAWAN",
+  "AGUNG SATRIA UTAMA",
+  "AGUSTINA",
+  "AINUL MARDIAH",
+  "ALDIANO AFANDY",
+  "ALI FAHMI SETIOSO",
+  "AMELIA BUNGA SAFITRI",
+  "ANDIKA DWI SAPUTRA",
+  "ARI NANDA FEFRIAN",
+  "BAYU AHMAD NUR IMAN",
+  "CHANDRA WIRA ATMAJA",
+  "DAFFA SAUQI",
+  "DEBY ORLANDO PRATAMA",
+  "DINO AFRIAN",
+  "DZAIDAN AKMAL PRATAMA",
+  "EKA SETYAWAN",
+  "ELSYA ALFIANI",
+  "FADLAN NABIL RIFQI SYAFIQ",
+  "FHAREL HARDINATA M. NUR",
+  "HANDY RYDHO WIJAYA",
+  "IKA AGUSTINA",
+  "INTAN NURAINI",
+  "JANA SURYANA",
+  "KHARISMA DINDA RAMADHANI",
+  "M. LUTHFI MAULANA",
+  "MUHAMMAD FADLI",
+  "MUHAMMAD HAIQAL",
+  "NESYA NANDINI",
+  "NUUR MIFTAHUL JAUHAR",
+  "PUTRI ADELINA FERANI",
+  "PUTRI TANSYIER DEWI",
+  "RAKA DRIMAHEZA",
+  "RAYHAN RAYNANDA",
+  "REHAN ADI PRASETIO",
+  "RIKO ALFANANDO",
+  "SHAFIRA NUR AZIZAH",
+  "VIKA HERAWATI"
+],
+
+"X-DPIB-2": [
+  "ADONIS NANDHITO",
+  "AGUSTIAN FERNANDO",
+  "AIKO ALVIZAUDRI KENATRA",
+  "AKHMAD RIZKY MURTADO",
+  "ALFINO PRAMANTA",
+  "ALIFAH KUSUMA WARDANI",
+  "ANDHIKA AZIZ PRATAMA",
+  "ARETHA ZHIE ZHIE. S",
+  "AULIA FEBRIYANA",
+  "CAHAYA PUTRI MARIONA",
+  "CHILA VIECHO NURHIDAYAH",
+  "DAVA DANIL PARESA",
+  "DIKA SAPUTRA",
+  "DIVA APRILIA",
+  "EKA PUTRA WIJAYA",
+  "ELLAS TIRTA SAVANA",
+  "FAIZ AL QORNI HAKIM",
+  "GILANG SETIA AN",
+  "HAFIZAH SETIA RAMADANI",
+  "HENKY TRIYAN SYAH",
+  "ILHAM DINATA",
+  "JAENAL SOBIRIN",
+  "KAYLA KANIA ALVIONA",
+  "LUTHFI HANIF",
+  "MELA NOVALIA",
+  "MUHAMMAD FAHRI",
+  "MUHAMMAD RAFLY AL - FAHREZY",
+  "NINO OKTAVIANO SAPUTRA",
+  "OSCHAR PARULIAN TAMPUBOLON",
+  "PUTRI FEBRIANI",
+  "RAHMAD RAMADAN",
+  "RAMDA WIRAKKA PRATAMA",
+  "REFAL FIRMANSYAH",
+  "RIKA SAPUTRI",
+  "SELFI MEDIARI A.ZYAHRA",
+  "THOLIB ABDUL ALIM",
+  "ZAHRA AMELIA"
+],
+
+"XI-DPIB-1": [
+  "ABI DWI ARYANSYAH",
+  "ADRIAN JULY SAPUTRA",
+  "AGNES FIDELA ASMARA",
+  "AHMAD FAQIH HUNTELAAR",
+  "AININ DINIYA HAQQI",
+  "ALVIN ANDRY PRATAMA",
+  "ANGGIA FAULINA",
+  "AZZAHRA KAYLA NURANISA",
+  "BAGUS TRI PUJIANTO",
+  "CELVIN NIKO PRATAMA",
+  "DANI FIRMANSYAH",
+  "DIKA PRATAMA",
+  "FADLAN NABIL RIFQI SYAFIQ",
+  "FAJAR DZULKARNAEN",
+  "FAQIH PANDU IRAWAN",
+  "FARIZ ARDIANTORO",
+  "GEVHANDRA MILANDO",
+  "HENDRA KURNIAWAN",
+  "INTAN BARO MAHARANI",
+  "KEYSIA PUTRI HANDAYANI",
+  "MARCEL ADITYA",
+  "MELIANA TISTA",
+  "MUHAMAD FAREL RADITYA",
+  "MUHAMMAD AGIL SAPUTRA",
+  "MUHAMMAD ASFA ALDIKA",
+  "MUHAMMAD HAFFIYAN ZASIN",
+  "NINGRUM NUR ANNISA",
+  "RADITYA TEGAR",
+  "RAFFI GALIH PRASETYO",
+  "RAKA RESKIADITIA HALTARA",
+  "RIO ZET MIKO",
+  "ROMULA RAJIDIN SYAKURTA",
+  "SYAMSUL ANWAR ARAFI",
+  "VINZA ADITYA RAMADHAN"
+],
+
+"XI-DPIB-2": [
+  "ADZKIA PURNOMO",
+  "AFDAL NUR ROHIM",
+  "AISYA AZZAHRA SINTIA",
+  "ANDI SETIAWAN",
+  "ARBA FIRMANSYAH",
+  "ARDA JEPRIYAN SYACH",
+  "AZIZ MAULANA ISHAK",
+  "DIKKY DWI WIBOWO",
+  "FADLI AZKA RAMANDIKA",
+  "FAHRIZA RISWANDI",
+  "FAREL PUTRA RAMADHAN",
+  "GILANG SETIA AN",
+  "INKA NABILA",
+  "INNA RAFFA FIRIZKU SUBING",
+  "IRWAN SAPUTRA",
+  "MUHAMMAD IQBAL MAULANA",
+  "MUHAMMAD NANDA ARYA REZA",
+  "MUHAMMAD SYAHRUL MUNIR",
+  "MUHAMMAD TAUFIQUZZIYAD",
+  "NAIFA MEZZALUNA RAMADHANI",
+  "NOVAL KHOIRUL EFENDI",
+  "PANDU ADJIE DINATA",
+  "QOIS NUR RAHMAN",
+  "RAMA YOGA PRATAMA",
+  "REFI ARTIKASARI",
+  "RISKA RAHMAWARDANI",
+  "RIZKY ADITYA",
+  "RIZKY PRATAMA",
+  "SITI RAHMAWATI",
+  "SULTAN PASHA ALTAFA",
+  "TIRTA NUR KHOIRUDIN",
+  "VENY FERAWATI",
+  "YUSUF RAMA WINATA",
+  "ZHULFA ANISA RAYIKINANTI"
+],
+
+"XII-DPIB-1": [
+  "AGUS MAULANA IKHSAN",
+  "APRILIA DWI LESTARI",
+  "AZ ZAHRA ANNISA",
+  "CAHAYA WULANDARI",
+  "CLAUDIA DHIZA SHEZA MALIKA",
+  "DAMAR DWI BIMANDIKA",
+  "DUWI NOFI WULANDARI",
+  "LARASATI CAHYANING PUTRI HERNADI",
+  "MUHAMAD LUTFI PRATAMA",
+  "MUHAMMAD IHCAN ILHAM",
+  "MUHAMMAD RIZKY",
+  "NADIA NURUL AFIFA",
+  "NAWANG AUFA QUROTA AKYUN",
+  "QURROTA A'YUN",
+  "RAIHAN HAKIM",
+  "WANTI RAHMADANI",
+  "WIDYA FADILLA ALBADRI",
+  "AGNA KHOIRUL NISA",
+  "ALL SHELLA VIERRANITHA AGLISKA",
+  "CITRA ASTI MUTIA",
+  "DAFFA KHUSNUREZA",
+  "DAVA PURNIAWANDA",
+  "DINI RAHMADANI",
+  "EGI LISTIANTI",
+  "FINKA INDAH ANGGRAINI",
+  "HERLIZA AWANDA OCTARA",
+  "KEYSHA ALLIFIA KHAIRUNISA",
+  "M. PASYA FAUZI SOPIAN",
+  "MUHAMMAD DHAFA",
+  "RADITYA FEBRIANZA RIZANTHA",
+  "RAFI DEBI ASMARA",
+  "RENO ANDRE SAPUTRA",
+  "REZA NURUL SAFITRI",
+  "SAFIRA",
+  "VIRGIAWAN LISTIANTO"
+],
+
+"XII-DPIB-2": [
+  "ADLY YOVI SAPUTRA",
+  "ANDREA DWI FERLIANSYAH",
+  "BAYHAQQI RAFLI",
+  "BAYU CATUR WIJANARKO",
+  "GALANG SATRIA PUTRA",
+  "IQBAL FERDIANSYAH",
+  "LEO CHANDRA JAYA KESUMA",
+  "LUCKY HERMAWAN",
+  "MAULANA ABIYYU FAQIH",
+  "MUHAMMAD FANI PRAJA MANDALA",
+  "MUHAMMAD RAIHAN WIRAYUDA",
+  "MUHAMMAD RISKY SYAPUTRA",
+  "NABILA",
+  "NASYA RAHMAWATI",
+  "NESYA KURNIA SARI",
+  "RAMADHAN ERLANG KHADAFI",
+  "REVAN SEBASTIAN BELANDRI",
+  "SISKA ANGGRAINI",
+  "ADIKA ANANTA RAMLI",
+  "AGAM PRASETIA JAYA",
+  "ALIF DWI KUNCORO",
+  "ALIFIA AULIA AMANDA",
+  "ARIA AGUNG PRASETIO",
+  "DIMAS MUHAMMAD AFRIZAL",
+  "DUWI SANTIKA",
+  "ESTER ROMAULI SIMATUPANG",
+  "FIBRI LYIANA",
+  "GALANG SAPUTRA",
+  "GLEND ANDIKA PRATAMA",
+  "GUSTI SONA ZULYAN PRATAMA",
+  "HAYDEN RIO SAPUTRA",
+  "MUHAMAD ARIF ALDO MAULANA",
+  "NOVITA SARI",
+  "PIRMANSYAH",
+  "ROMLI AFFANDI",
+  "YUNITA AGUSTINA"
+]
+
         };
 
-        const btnSave = document.getElementById('btn-save-firebase');
-        if(btnSave) {
-            btnSave.addEventListener('click', async (e) => {
-                e.preventDefault();
-                const nama = document.getElementById('input-nama-final').value;
-                if (!nama) { showModal('GAGAL', 'Nama Peminjam wajib diisi.', 'error'); return; }
+        // Logic Peminjaman List
+        window.listAntrean = [];
 
-                const tanggal = document.getElementById('input-tanggal').value;
-                const kelas = document.getElementById('input-kelas').value;
-                const jurusan = document.getElementById('input-jurusan').value;
-                let alat = document.getElementById('input-alat').value;
-                if (alat === 'Lainnya') alat = document.getElementById('input-alat-lain').value;
-                let jumlah = document.getElementById('input-jumlah').value;
-                if (jumlah === 'Lainnya') jumlah = document.getElementById('input-jumlah-lain').value + " Unit";
-                const kode = document.getElementById('input-kode').value;
-
-                btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENYIMPAN...';
-                btnSave.disabled = true;
-
-                try {
-                    await addDoc(collection(db, "peminjaman_dpib"), {
-                        tanggal, kelas, jurusan, nama, alat, jumlah, kode,
-                        status: 'DIPINJAM', kondisi_kembali: '-', timestamp: new Date()
-                    });
-                    document.getElementById('form-pinjam').reset();
-                    document.getElementById('input-tanggal').value = new Date().toISOString().split('T')[0];
-                    // Reset input states
-                    document.getElementById('input-kelas').disabled = true;
-                    document.getElementById('input-jurusan').disabled = true;
-                    document.getElementById('input-nama-final').disabled = true;
-                    showModal('TERSIMPAN', `Data a.n <b>${nama}</b> berhasil masuk database.`, 'success');
-                } catch (error) {
-                    showModal('ERROR', 'Gagal menyimpan.', 'error');
-                } finally {
-                    btnSave.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SIMPAN DATA';
-                    btnSave.disabled = false;
-                }
+        // Realtime Listener
+        const q = query(collection(db, "peminjaman_dpib"), where("status", "==", "DIPINJAM"));
+        onSnapshot(q, (snapshot) => {
+            const tbody = document.getElementById('tabel-peminjaman');
+            tbody.innerHTML = '';
+            snapshot.forEach(doc => {
+                const item = doc.data();
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="text-center"><input type="checkbox" class="checkbox-kembali accent-yellow-500" value="${doc.id}"></td>
+                        <td class="font-data">${item.tanggal}</td>
+                        <td class="font-bold">${item.nama} <br> <span class="text-blue-500 font-normal">${item.kelas} ${item.jurusan || ''}</span></td>
+                        <td class="text-yellow-500">${item.alat}</td>
+                        <td class="text-center font-bold">${item.kode}</td>
+                        <td class="text-center"><span class="bg-red-900 text-white px-2 py-0.5 rounded text-[10px]">PINJAM</span></td>
+                    </tr>
+                `;
             });
-        }
-
-        function setupRealtimeListener() {
-            const q = query(collection(db, "peminjaman_dpib"), where("status", "==", "DIPINJAM"));
-            onSnapshot(q, (snapshot) => {
-                const tbody = document.getElementById('tabel-peminjaman');
-                tbody.innerHTML = '';
-                document.getElementById('loading-indicator').classList.add('hidden');
-                
-                const items = [];
-                snapshot.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-                items.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
-
-                if (items.length === 0) {
-                    document.getElementById('empty-state').classList.remove('hidden');
-                } else {
-                    document.getElementById('empty-state').classList.add('hidden');
-                    items.forEach(item => {
-                        const row = `
-                            <tr>
-                                <td class="text-center"><input type="checkbox" class="checkbox-kembali w-5 h-5 accent-yellow-500" value="${item.id}"></td>
-                                <td class="font-data text-xs">${item.tanggal}</td>
-                                <td><div class="font-bold text-white">${item.nama}</div><div class="text-[10px] text-blue-400">${item.kelas} ${item.jurusan}</div></td>
-                                <td><span class="text-yellow-500 font-bold">${item.alat}</span><br><span class="text-xs text-gray-500">${item.jumlah}</span></td>
-                                <td class="text-center font-data font-bold">${item.kode}</td>
-                                <td class="text-center"><span class="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded">DIPINJAM</span></td>
-                            </tr>`;
-                        tbody.innerHTML += row;
-                    });
-                }
-            });
-        }
-        setupRealtimeListener();
-
-        const btnReturn = document.getElementById('btn-return-firebase');
-        if(btnReturn) {
-            btnReturn.addEventListener('click', async () => {
-                if (document.getElementById('admin-password').value !== "lab15.30") { 
-                    showModal('AKSES DITOLAK', 'Password Salah!', 'error'); return;
-                }
-                const checkboxes = document.querySelectorAll('.checkbox-kembali:checked');
-                if (checkboxes.length === 0) { showModal('INFO', 'Pilih data!', 'info'); return; }
-                const kondisi = document.getElementById('return-condition').value;
-                try {
-                    const promises = Array.from(checkboxes).map(box => updateDoc(doc(db, "peminjaman_dpib", box.value), {
-                        status: "DIKEMBALIKAN", kondisi_kembali: kondisi, tanggal_kembali: new Date().toISOString().split('T')[0]
-                    }));
-                    await Promise.all(promises);
-                    document.getElementById('admin-password').value = '';
-                    showModal('SUKSES', 'Data diperbarui.', 'success');
-                } catch (e) { showModal('ERROR', 'Gagal update.', 'error'); }
-            });
-        }
+        });
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set default date to today
-            const dateInput = document.getElementById('input-tanggal');
-            dateInput.value = new Date().toISOString().split('T')[0];
+        // State Stepper
+        let currentStep = 1;
+        let selectedPeminjam = { nama: '', kelas: '', jurusan: '' };
+        let selectedAlatName = '';
 
-            const searchInput = document.getElementById('search-nama');
-            const searchResults = document.getElementById('search-results');
-            const inputKelas = document.getElementById('input-kelas');
-            const inputJurusan = document.getElementById('input-jurusan');
-            const inputNamaFinal = document.getElementById('input-nama-final');
+        // Search Logic
+        const searchInput = document.getElementById('search-nama');
+        const searchResults = document.getElementById('search-results');
 
-            searchInput.addEventListener('input', function() {
-                const val = this.value.toLowerCase();
-                searchResults.innerHTML = '';
-                if (!val) { searchResults.classList.add('hidden'); return; }
+        searchInput.addEventListener('input', function() {
+            const val = this.value.toLowerCase();
+            searchResults.innerHTML = '';
+            if (!val) { searchResults.classList.add('hidden'); return; }
 
-                let matches = [];
-                for (let key in window.databaseSiswa) {
-                    const parts = key.split('-');
-                    const kelas = parts[0];
-                    const jur = parts[1] + (parts[2] ? '-' + parts[2] : '');
-                    
-                    window.databaseSiswa[key].forEach(nama => {
-                        if (nama.toLowerCase().includes(val)) {
-                            matches.push({ nama, kelas, jur, originalKey: key });
-                        }
-                    });
-                }
-
-                searchResults.classList.remove('hidden');
-
-                // Tampilkan hasil pencarian
-                matches.slice(0, 10).forEach(m => {
-                    const div = document.createElement('div');
-                    div.className = 'search-item';
-                    div.innerHTML = `<span class="font-bold">${m.nama}</span> <span class="text-[10px] text-gray-500">(${m.kelas} ${m.jur})</span>`;
-                    div.onclick = () => {
-                        inputNamaFinal.value = m.nama;
-                        inputKelas.value = m.kelas;
-                        // Map jurusan database to dropdown value
-                        const jurVal = m.jur.includes('DPIB-1') ? 'DPIB-1' : (m.jur.includes('DPIB-2') ? 'DPIB-2' : 'Lainnya');
-                        inputJurusan.value = jurVal;
-                        
-                        searchInput.value = m.nama;
-                        
-                        // Kunci field karena otomatis
-                        inputNamaFinal.disabled = true;
-                        inputKelas.disabled = true;
-                        inputJurusan.disabled = true;
-                        
-                        searchResults.classList.add('hidden');
-                    };
-                    searchResults.appendChild(div);
+            let matches = [];
+            for (let key in window.databaseSiswa) {
+                const parts = key.split('-');
+                window.databaseSiswa[key].forEach(nama => {
+                    if (nama.toLowerCase().includes(val)) {
+                        matches.push({ nama, kelas: parts[0], jur: parts[1] + (parts[2] ? '-' + parts[2] : '') });
+                    }
                 });
+            }
+            searchResults.classList.remove('hidden');
 
-                // Tambahkan pilihan "LAINNYA / INPUT MANUAL"
-                const otherDiv = document.createElement('div');
-                otherDiv.className = 'search-item text-yellow-500 font-bold border-t border-gray-700';
-                otherDiv.innerHTML = `<i class="fa-solid fa-plus mr-2"></i> LAINNYA / INPUT MANUAL...`;
-                otherDiv.onclick = () => {
-                    inputNamaFinal.value = searchInput.value.toUpperCase();
-                    inputKelas.value = 'Lainnya';
-                    inputJurusan.value = 'Lainnya';
-                    
-                    // Aktifkan field untuk pengisian manual
-                    inputNamaFinal.disabled = false;
-                    inputKelas.disabled = false;
-                    inputJurusan.disabled = false;
-                    
-                    searchInput.value = "INPUT MANUAL AKTIF";
+            matches.slice(0, 8).forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'search-item';
+                div.innerHTML = `<span class="font-bold">${m.nama}</span> <span class="text-[10px] text-gray-500">(${m.kelas} ${m.jur})</span>`;
+                div.onclick = () => {
+                    openStepper(m.nama, m.kelas, m.jur);
                     searchResults.classList.add('hidden');
+                    searchInput.value = '';
                 };
-                searchResults.appendChild(otherDiv);
+                searchResults.appendChild(div);
             });
 
-            document.addEventListener('click', (e) => {
-                if (!searchInput.contains(e.target)) searchResults.classList.add('hidden');
-            });
+            const manual = document.createElement('div');
+            manual.className = 'search-item text-yellow-500 font-bold border-t border-gray-700';
+            manual.innerHTML = 'INPUT MANUAL (LAINNYA)';
+            manual.onclick = () => {
+                openStepper('', '', '', true);
+                searchResults.classList.add('hidden');
+                searchInput.value = '';
+            };
+            searchResults.appendChild(manual);
         });
 
-        function showPage(pageId) {
-            ['dashboard', 'peminjaman', 'pengembalian', 'pemakaian'].forEach(p => {
-                document.getElementById('page-' + p).classList.add('hidden');
-            });
-            const target = document.getElementById('page-' + pageId);
-            target.classList.remove('hidden');
-            target.classList.add('fade-in');
+        function openStepper(nama, kelas, jur, isManual = false) {
+            currentStep = isManual ? 1 : 2;
+            selectedPeminjam = { nama, kelas, jurusan: jur };
+            
+            document.getElementById('display-nama').innerText = nama || 'MANUAL INPUT';
+            document.getElementById('display-kelas-jurusan').innerText = (kelas ? `${kelas} ${jur}` : 'SILAKAN ISI IDENTITAS');
+            
+            document.getElementById('stepper-modal').classList.remove('hidden');
+            showStep(currentStep);
+        }
+
+        function showStep(s) {
+            document.querySelectorAll('.step-slide').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + s).classList.add('active');
+        }
+
+        function nextStep(s) {
+            if (s === 2 && currentStep === 1) {
+                selectedPeminjam.nama = document.getElementById('manual-nama').value;
+                selectedPeminjam.kelas = document.getElementById('manual-kelas').value;
+                selectedPeminjam.jurusan = document.getElementById('manual-jurusan').value;
+                if(!selectedPeminjam.nama) return showModal('ERROR', 'Nama harus diisi', 'error');
+                document.getElementById('display-nama').innerText = selectedPeminjam.nama;
+                document.getElementById('display-kelas-jurusan').innerText = `${selectedPeminjam.kelas} ${selectedPeminjam.jurusan}`;
+            }
+            currentStep = s;
+            showStep(s);
+        }
+
+        function selectAlat(alat) {
+            selectedAlatName = alat;
+            document.getElementById('manual-alat').value = alat;
+            nextStep(3);
+        }
+
+        function addToQueue() {
+            const alat = document.getElementById('manual-alat').value.toUpperCase();
+            const jumlahRaw = document.getElementById('stepper-jumlah').value;
+            const kode = document.getElementById('stepper-kode').value.toUpperCase();
+            
+            if (!alat || !kode) {
+                showModal('GAGAL', 'Alat dan Kode wajib diisi!', 'error');
+                return;
+            }
+
+            const data = {
+                nama: selectedPeminjam.nama,
+                kelas: selectedPeminjam.kelas,
+                jurusan: selectedPeminjam.jurusan,
+                alat: alat,
+                jumlah: jumlahRaw + " Unit",
+                kode: kode,
+                tanggal: new Date().toISOString().split('T')[0],
+                status: 'DIPINJAM',
+                timestamp: new Date()
+            };
+
+            window.listAntrean.push(data);
+            updateAntreanUI();
+            closeStepper();
+        }
+
+        function updateAntreanUI() {
+            const body = document.getElementById('list-antrean-body');
+            const count = document.getElementById('count-antrean');
+            const btn = document.getElementById('btn-save-firebase');
+
+            count.innerText = window.listAntrean.length;
+            
+            if (window.listAntrean.length === 0) {
+                body.innerHTML = '<tr><td colspan="4" class="p-10 text-center text-gray-600 italic">Belum ada data di antrean.</td></tr>';
+                btn.disabled = true;
+                btn.classList.add('opacity-50');
+            } else {
+                body.innerHTML = '';
+                window.listAntrean.forEach((item, i) => {
+                    body.innerHTML += `
+                        <tr class="hover:bg-white/5">
+                            <td class="p-3">
+                                <span class="font-bold text-blue-400">${item.nama}</span><br>
+                                <span class="text-[9px] text-gray-500">${item.kelas} ${item.jurusan || ''}</span>
+                            </td>
+                            <td class="p-3">${item.alat} (${item.jumlah})</td>
+                            <td class="p-3 text-center text-yellow-500 font-bold">${item.kode}</td>
+                            <td class="p-3 text-center flex items-center justify-center gap-4">
+                                <button onclick="editFromQueue(${i})" class="text-blue-400 hover:text-blue-300">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="removeFromQueue(${i})" class="text-red-500 hover:text-red-400">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        window.editFromQueue = (i) => {
+            const item = window.listAntrean[i];
+            
+            // Set state global
+            selectedPeminjam = { nama: item.nama, kelas: item.kelas, jurusan: item.jurusan };
+            
+            // Isi Field Stepper
+            document.getElementById('manual-nama').value = item.nama;
+            document.getElementById('manual-kelas').value = item.kelas;
+            document.getElementById('manual-jurusan').value = item.jurusan;
+            document.getElementById('manual-alat').value = item.alat;
+            document.getElementById('stepper-jumlah').value = item.jumlah.split(' ')[0];
+            document.getElementById('stepper-kode').value = item.kode;
+            
+            // Update Label Display
+            document.getElementById('display-nama').innerText = item.nama;
+            document.getElementById('display-kelas-jurusan').innerText = `${item.kelas} ${item.jurusan}`;
+
+            // Hapus dari antrean lama (akan masuk lagi sebagai baru saat "Tambah")
+            window.listAntrean.splice(i, 1);
+            updateAntreanUI();
+
+            // Buka Modal di Step Detail
+            document.getElementById('stepper-modal').classList.remove('hidden');
+            showStep(3);
+        };
+
+        window.removeFromQueue = (i) => {
+            window.listAntrean.splice(i, 1);
+            updateAntreanUI();
+        };
+
+        window.clearAntrean = () => {
+            window.listAntrean = [];
+            updateAntreanUI();
+        };
+
+        // Simpan Massal (Gunakan Nama sebagai ID)
+        document.getElementById('btn-save-firebase').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-save-firebase');
+            btn.innerText = "SEDANG MENGIRIM...";
+            btn.disabled = true;
+
+            try {
+                const batch = window.writeBatch(window.db);
+                window.listAntrean.forEach(data => {
+                    const docId = `${data.nama}_${data.kode}`.replace(/\s+/g, '_');
+                    const ref = window.doc(window.db, "peminjaman_dpib", docId);
+                    batch.set(ref, data);
+                });
+                await batch.commit();
+                window.listAntrean = [];
+                updateAntreanUI();
+                showModal('SUKSES', 'Data tersimpan dengan ID berbasis Nama Peminjam.', 'success');
+            } catch (e) {
+                showModal('ERROR', 'Gagal simpan ke database.', 'error');
+            } finally {
+                btn.innerText = "SIMPAN SEMUA KE DATABASE";
+            }
+        });
+
+        function closeStepper() {
+            document.getElementById('stepper-modal').classList.add('hidden');
+            document.getElementById('stepper-kode').value = '';
+            document.getElementById('stepper-jumlah').value = '1';
+            document.getElementById('manual-alat').value = '';
+            document.getElementById('manual-nama').value = '';
+            document.getElementById('manual-kelas').value = '';
+            document.getElementById('manual-jurusan').value = '';
+        }
+
+        function showPage(p) {
+            ['dashboard', 'peminjaman', 'pengembalian', 'pemakaian'].forEach(id => document.getElementById('page-'+id).classList.add('hidden'));
+            document.getElementById('page-'+p).classList.remove('hidden');
         }
 
         function updateClock() {
@@ -744,61 +898,46 @@
             document.getElementById('realtime-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
         }
         setInterval(updateClock, 1000);
-        updateClock();
-
-        const logMessages = ["SYSTEM_READY...", "FIRESTORE_CONNECTED...", "READY_TO_INPUT..."];
-        let logI = 0, charI = 0;
-        function typeWriter() {
-            const el = document.getElementById('terminal-text');
-            if (charI < logMessages[logI].length) {
-                el.innerText += logMessages[logI].charAt(charI);
-                charI++;
-                setTimeout(typeWriter, 50);
-            } else {
-                setTimeout(() => {
-                    el.innerText = ''; charI = 0; logI = (logI + 1) % logMessages.length;
-                    typeWriter();
-                }, 3000);
-            }
-        }
-        typeWriter();
-
-        function cekAlatLainnya(s) { document.getElementById('input-alat-lain').classList.toggle('hidden', s.value !== 'Lainnya'); }
-        function cekJumlahLainnya(s) { document.getElementById('input-jumlah-lain').classList.toggle('hidden', s.value !== 'Lainnya'); }
 
         function showModal(title, msg, type) {
-            const m = document.getElementById('custom-modal');
-            m.classList.remove('hidden');
+            document.getElementById('custom-modal').classList.remove('hidden');
             document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerHTML = msg;
-            const h = document.getElementById('modal-header-bg');
-            h.className = type === 'success' ? 'bg-green-600 p-3 flex justify-between' : (type === 'error' ? 'bg-red-600 p-3 flex justify-between' : 'bg-white p-3 flex justify-between');
-            setTimeout(() => document.getElementById('modal-content').classList.replace('opacity-0', 'opacity-100'), 10);
+            document.getElementById('modal-message').innerText = msg;
         }
         function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
 
-        function verifyAdminDownload() {
-            if (document.getElementById('download-auth-pass').value === 'lab15.30') {
+        window.verifyAdminDownload = () => {
+            if(document.getElementById('download-auth-pass').value === 'lab15.30') {
                 document.getElementById('admin-lock-screen').classList.add('hidden');
                 document.getElementById('admin-download-area').classList.remove('hidden');
-            } else { showModal('GAGAL', 'Password Salah', 'error'); }
-        }
+            }
+        };
 
-        async function downloadLaporanCSV() {
-            try {
-                const q = window.query(window.collection(window.db, "peminjaman_dpib"), window.orderBy("timestamp", "desc"));
-                const snap = await window.getDocs(q);
-                let csv = "data:text/csv;charset=utf-8,Tanggal,Nama,Kelas,Jurusan,Alat,Jumlah,Kode,Status\n";
-                snap.forEach(d => {
-                    const a = d.data();
-                    csv += `${a.tanggal},${a.nama},${a.kelas},${a.jurusan},${a.alat},${a.jumlah},${a.kode},${a.status}\n`;
+        window.downloadLaporanCSV = async () => {
+            const q = window.query(window.collection(window.db, "peminjaman_dpib"), window.orderBy("timestamp", "desc"));
+            const snap = await window.getDocs(q);
+            let csv = "Tanggal,Nama,Kelas,Jurusan,Alat,Kode,Status\n";
+            snap.forEach(d => {
+                const a = d.data();
+                csv += `${a.tanggal},${a.nama},${a.kelas},${a.jurusan || ''},${a.alat},${a.kode},${a.status}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'REKAP_DPIB.csv'; a.click();
+        };
+
+        document.getElementById('btn-return-firebase').addEventListener('click', async () => {
+            if(document.getElementById('admin-password').value !== 'lab15.30') return showModal('ERROR', 'Sandi Salah', 'error');
+            const checks = document.querySelectorAll('.checkbox-kembali:checked');
+            for(let c of checks) {
+                await window.updateDoc(window.doc(window.db, "peminjaman_dpib", c.value), {
+                    status: 'DIKEMBALIKAN',
+                    tgl_kembali: new Date().toISOString().split('T')[0]
                 });
-                const link = document.createElement("a");
-                link.href = encodeURI(csv);
-                link.download = "REKAP_DPIB.csv";
-                link.click();
-            } catch (e) { showModal('ERROR', 'Gagal download', 'error'); }
-        }
+            }
+            showModal('SUKSES', 'Status diperbarui', 'success');
+        });
     </script>
 </body>
 </html>
