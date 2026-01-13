@@ -10,12 +10,13 @@
 
     <style>
         :root {
-            --bg-dark: #1a1a1d;      
-            --bg-panel: #252529;     
+            /* Perubahan warna background: tidak terlalu gelap, tidak terlalu terang */
+            --bg-dark: #374151;      
+            --bg-panel: #1f2937;     
             --safety-yellow: #facc15; 
             --tech-blue: #0ea5e9;    
-            --text-light: #e5e7eb;
-            --grid-color: rgba(255, 255, 255, 0.07);
+            --text-light: #f3f4f6;
+            --grid-color: rgba(255, 255, 255, 0.05);
         }
 
         body {
@@ -32,7 +33,7 @@
         .scan-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; 
-            background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.15) 0.05%, transparent 0.1%);
+            background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.1) 0.05%, transparent 0.1%);
             background-size: 100% 200vh; 
             animation: scan-move 10s linear infinite; 
             pointer-events: none;
@@ -50,7 +51,7 @@
         }
 
         .header-industrial {
-            background-color: #111;
+            background-color: #111827;
             border-bottom: 4px solid var(--safety-yellow);
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             z-index: 50; position: sticky; top: 0;
@@ -58,7 +59,7 @@
 
         .card-industrial {
             background: var(--bg-panel);
-            border: 1px solid #444;
+            border: 1px solid #4b5563;
             position: relative; z-index: 30; 
             transition: all 0.3s ease;
             clip-path: polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%);
@@ -71,14 +72,14 @@
         }
 
         input, select, textarea {
-            background-color: #151515;
-            border: 1px solid #555;
+            background-color: #111827;
+            border: 1px solid #4b5563;
             color: white;
             font-family: 'Roboto Mono', monospace;
             border-left: 3px solid var(--tech-blue);
         }
         input:focus, select:focus {
-            outline: none; border-color: var(--safety-yellow); background-color: #1a1a1a;
+            outline: none; border-color: var(--safety-yellow); background-color: #1f2937;
         }
 
         .btn-submit {
@@ -88,11 +89,11 @@
         }
 
         .tech-table th {
-            background-color: #333;
+            background-color: #111827;
             color: var(--safety-yellow);
             border-bottom: 2px solid var(--safety-yellow);
         }
-        .tech-table td { border-bottom: 1px solid #333; padding: 12px; }
+        .tech-table td { border-bottom: 1px solid #374151; padding: 12px; }
 
         .blink-green { animation: blink-anim 1.5s infinite; background-color: #22c55e; }
         
@@ -111,13 +112,12 @@
 
         #search-results {
             position: absolute; width: 100%; max-height: 200px;
-            overflow-y: auto; background: #1a1a1a; border: 1px solid #444;
+            overflow-y: auto; background: #111827; border: 1px solid #4b5563;
             z-index: 100; margin-top: 1px;
         }
-        .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #333; }
+        .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #374151; }
         .search-item:hover { background-color: var(--tech-blue); color: black; }
 
-        /* Stepper UI Styles */
         .step-slide { display: none; }
         .step-slide.active { display: block; animation: slideIn 0.3s ease-out; }
         @keyframes slideIn {
@@ -205,28 +205,26 @@
         <!-- PAGE PEMINJAMAN -->
         <section id="page-peminjaman" class="hidden max-w-6xl mx-auto fade-in">
             <div class="flex justify-between items-center mb-6">
-                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-400 hover:text-white font-bold uppercase text-sm">
+                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-200 hover:text-white font-bold uppercase text-sm">
                     <i class="fa-solid fa-arrow-left bg-gray-800 p-2 rounded"></i> Kembali
                 </button>
                 <div class="text-right">
                     <h2 class="text-2xl font-bold text-blue-400 uppercase">Form Peminjaman</h2>
-                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">SISTEM POP-UP STEPPER ACTIVE</p>
+                    <p class="text-[10px] text-gray-400 font-bold tracking-widest">SISTEM POP-UP STEPPER ACTIVE</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Trigger Search -->
-                <div class="lg:col-span-12 bg-[#202024] p-8 border-t-4 border-blue-500">
+                <div class="lg:col-span-12 bg-[#1f2937] p-8 border-t-4 border-blue-500 shadow-lg">
                     <label class="block text-xs font-bold text-blue-400 mb-2 uppercase tracking-widest">Cari Nama Peminjam</label>
                     <div class="relative max-w-2xl">
                         <input type="text" id="search-nama" placeholder="[Ketik nama siswa]" class="w-full p-4 text-lg bg-black border-l-8 border-yellow-500 uppercase font-black tracking-tighter">
                         <div id="search-results" class="hidden shadow-2xl"></div>
                     </div>
-                    <p class="text-[10px] text-gray-500 mt-3 italic uppercase">Sistem akan otomatis membuka jendela input setelah nama dipilih.</p>
+                    <p class="text-[10px] text-gray-400 mt-3 italic uppercase">Sistem akan otomatis membuka jendela input setelah nama dipilih.</p>
                 </div>
 
-                <!-- Antrean List -->
-                <div class="lg:col-span-12 bg-[#202024] flex flex-col border-t-4 border-yellow-500 mt-6">
+                <div class="lg:col-span-12 bg-[#1f2937] flex flex-col border-t-4 border-yellow-500 mt-6 shadow-lg">
                     <div class="p-4 border-b border-gray-700 bg-black/20 flex justify-between items-center">
                         <h3 class="text-sm font-bold text-yellow-500 uppercase flex items-center gap-2">
                             <i class="fa-solid fa-list-check"></i> LIST DATA READY (<span id="count-antrean">0</span>)
@@ -244,7 +242,7 @@
                                 </tr>
                             </thead>
                             <tbody id="list-antrean-body" class="divide-y divide-gray-800">
-                                <tr><td colspan="4" class="p-10 text-center text-gray-600 italic">Belum ada data di antrean.</td></tr>
+                                <tr><td colspan="4" class="p-10 text-center text-gray-400 italic">Belum ada data di antrean.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -260,14 +258,22 @@
         <!-- PAGE PENGEMBALIAN -->
         <section id="page-pengembalian" class="hidden max-w-6xl mx-auto fade-in">
              <div class="flex justify-between items-center mb-6">
-                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-400 hover:text-white font-bold uppercase text-sm">
+                <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-200 hover:text-white font-bold uppercase text-sm">
                     <i class="fa-solid fa-arrow-left bg-gray-800 p-2 rounded"></i> KEMBALI
                 </button>
                 <h2 class="text-2xl font-bold text-yellow-500 uppercase">PENGEMBALIAN</h2>
             </div>
-            <div class="bg-[#202024] border border-gray-700 p-1">
-                <div class="bg-black/50 p-2 flex justify-between items-center border-b border-gray-700 mb-4">
-                    <input type="text" id="cari-kode" placeholder="Filter Kode..." class="bg-gray-800 text-xs p-2 rounded uppercase">
+            <div class="bg-[#1f2937] border border-gray-700 p-1 shadow-xl">
+                <div class="bg-black/50 p-3 grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-gray-700 mb-4">
+                    <!-- Penambahan Fitur Search by Name & Search by Code -->
+                    <div>
+                        <label class="text-[10px] text-gray-400 font-bold uppercase block mb-1">Search by Name</label>
+                        <input type="text" id="cari-nama-kembali" oninput="filterTabelKembali()" placeholder="Nama Siswa..." class="w-full bg-gray-800 text-xs p-2 rounded uppercase border-l-2 border-yellow-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-400 font-bold uppercase block mb-1">Search by Code</label>
+                        <input type="text" id="cari-kode-kembali" oninput="filterTabelKembali()" placeholder="Kode Alat..." class="w-full bg-gray-800 text-xs p-2 rounded uppercase border-l-2 border-blue-500">
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs tech-table font-data">
@@ -300,8 +306,8 @@
 
         <!-- PAGE REKAP -->
         <section id="page-pemakaian" class="hidden max-w-4xl mx-auto pt-10 text-center">
-             <button onclick="showPage('dashboard')" class="mb-8 text-gray-400 hover:text-white font-bold uppercase text-sm">Kembali</button>
-             <div class="bg-gray-800 p-12 border border-gray-600">
+             <button onclick="showPage('dashboard')" class="mb-8 text-gray-200 hover:text-white font-bold uppercase text-sm">Kembali</button>
+             <div class="bg-gray-800 p-12 border border-gray-600 shadow-2xl">
                 <div id="admin-lock-screen">
                     <i class="fa-solid fa-lock text-5xl text-red-500 mb-4"></i>
                     <h2 class="text-2xl font-bold text-white mb-6 uppercase">RESTRICTED AREA</h2>
@@ -316,19 +322,17 @@
         </section>
     </main>
 
-    <!-- STEPPER MODAL (NEW) -->
+    <!-- STEPPER MODAL -->
     <div id="stepper-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-black/90 absolute inset-0 backdrop-blur-md"></div>
-        <div class="relative z-10 w-full max-w-lg bg-[#1a1a1a] border-2 border-blue-500 shadow-[0_0_50px_rgba(14,165,233,0.3)]">
+        <div class="relative z-10 w-full max-w-lg bg-[#111827] border-2 border-blue-500 shadow-[0_0_50px_rgba(14,165,233,0.3)]">
             <div class="caution-stripes h-2 w-full"></div>
             <div class="p-6">
-                <!-- Identitas Info -->
                 <div id="step-identity-display" class="mb-6 border-l-4 border-yellow-500 pl-4 bg-white/5 p-3">
                     <h4 id="display-nama" class="text-xl font-black text-white uppercase leading-none">-</h4>
                     <p id="display-kelas-jurusan" class="text-[10px] text-blue-400 font-bold tracking-widest mt-1">-</p>
                 </div>
 
-                <!-- SLIDE 1: IDENTITAS (Hanya jika manual) -->
                 <div id="step-1" class="step-slide">
                     <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase italic">Data Identitas Manual</h3>
                     <input type="text" id="manual-nama" placeholder="NAMA" class="w-full p-3 mb-3 uppercase">
@@ -339,7 +343,6 @@
                     <button onclick="nextStep(2)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut Pilih Alat</button>
                 </div>
 
-                <!-- SLIDE 2: PILIH ALAT -->
                 <div id="step-2" class="step-slide">
                     <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Pilih Alat Inventaris</h3>
                     <div class="grid grid-cols-2 gap-2 mb-4">
@@ -352,7 +355,6 @@
                     <button onclick="nextStep(3)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut ke Detail</button>
                 </div>
 
-                <!-- SLIDE 3: JUMLAH & KODE -->
                 <div id="step-3" class="step-slide">
                     <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Detail Peminjaman</h3>
                     <div class="mb-4">
@@ -373,7 +375,7 @@
     <!-- MODAL NOTIF -->
     <div id="custom-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4">
         <div class="bg-black/80 absolute inset-0"></div>
-        <div class="relative z-10 w-full max-w-sm bg-[#222] border-2 border-white p-6 text-center">
+        <div class="relative z-10 w-full max-w-sm bg-[#1f2937] border-2 border-white p-6 text-center shadow-2xl">
             <h3 id="modal-title" class="font-bold text-white mb-2 uppercase"></h3>
             <p id="modal-message" class="text-gray-400 text-sm mb-6"></p>
             <button onclick="closeModal()" class="w-full bg-white text-black py-2 font-bold uppercase">Tutup</button>
@@ -397,7 +399,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Global DB Functions
         window.db = db;
         window.writeBatch = writeBatch;
         window.collection = collection;
@@ -408,245 +409,17 @@
         window.orderBy = orderBy;
         window.updateDoc = updateDoc;
 
-        // Data Siswa
         window.databaseSiswa = {
-            "X-DPIB-1": [
-  "ADAM ILHAM DARMAWAN",
-  "AGUNG SATRIA UTAMA",
-  "AGUSTINA",
-  "AINUL MARDIAH",
-  "ALDIANO AFANDY",
-  "ALI FAHMI SETIOSO",
-  "AMELIA BUNGA SAFITRI",
-  "ANDIKA DWI SAPUTRA",
-  "ARI NANDA FEFRIAN",
-  "BAYU AHMAD NUR IMAN",
-  "CHANDRA WIRA ATMAJA",
-  "DAFFA SAUQI",
-  "DEBY ORLANDO PRATAMA",
-  "DINO AFRIAN",
-  "DZAIDAN AKMAL PRATAMA",
-  "EKA SETYAWAN",
-  "ELSYA ALFIANI",
-  "FADLAN NABIL RIFQI SYAFIQ",
-  "FHAREL HARDINATA M. NUR",
-  "HANDY RYDHO WIJAYA",
-  "IKA AGUSTINA",
-  "INTAN NURAINI",
-  "JANA SURYANA",
-  "KHARISMA DINDA RAMADHANI",
-  "M. LUTHFI MAULANA",
-  "MUHAMMAD FADLI",
-  "MUHAMMAD HAIQAL",
-  "NESYA NANDINI",
-  "NUUR MIFTAHUL JAUHAR",
-  "PUTRI ADELINA FERANI",
-  "PUTRI TANSYIER DEWI",
-  "RAKA DRIMAHEZA",
-  "RAYHAN RAYNANDA",
-  "REHAN ADI PRASETIO",
-  "RIKO ALFANANDO",
-  "SHAFIRA NUR AZIZAH",
-  "VIKA HERAWATI"
-],
-
-"X-DPIB-2": [
-  "ADONIS NANDHITO",
-  "AGUSTIAN FERNANDO",
-  "AIKO ALVIZAUDRI KENATRA",
-  "AKHMAD RIZKY MURTADO",
-  "ALFINO PRAMANTA",
-  "ALIFAH KUSUMA WARDANI",
-  "ANDHIKA AZIZ PRATAMA",
-  "ARETHA ZHIE ZHIE. S",
-  "AULIA FEBRIYANA",
-  "CAHAYA PUTRI MARIONA",
-  "CHILA VIECHO NURHIDAYAH",
-  "DAVA DANIL PARESA",
-  "DIKA SAPUTRA",
-  "DIVA APRILIA",
-  "EKA PUTRA WIJAYA",
-  "ELLAS TIRTA SAVANA",
-  "FAIZ AL QORNI HAKIM",
-  "GILANG SETIA AN",
-  "HAFIZAH SETIA RAMADANI",
-  "HENKY TRIYAN SYAH",
-  "ILHAM DINATA",
-  "JAENAL SOBIRIN",
-  "KAYLA KANIA ALVIONA",
-  "LUTHFI HANIF",
-  "MELA NOVALIA",
-  "MUHAMMAD FAHRI",
-  "MUHAMMAD RAFLY AL - FAHREZY",
-  "NINO OKTAVIANO SAPUTRA",
-  "OSCHAR PARULIAN TAMPUBOLON",
-  "PUTRI FEBRIANI",
-  "RAHMAD RAMADAN",
-  "RAMDA WIRAKKA PRATAMA",
-  "REFAL FIRMANSYAH",
-  "RIKA SAPUTRI",
-  "SELFI MEDIARI A.ZYAHRA",
-  "THOLIB ABDUL ALIM",
-  "ZAHRA AMELIA"
-],
-
-"XI-DPIB-1": [
-  "ABI DWI ARYANSYAH",
-  "ADRIAN JULY SAPUTRA",
-  "AGNES FIDELA ASMARA",
-  "AHMAD FAQIH HUNTELAAR",
-  "AININ DINIYA HAQQI",
-  "ALVIN ANDRY PRATAMA",
-  "ANGGIA FAULINA",
-  "AZZAHRA KAYLA NURANISA",
-  "BAGUS TRI PUJIANTO",
-  "CELVIN NIKO PRATAMA",
-  "DANI FIRMANSYAH",
-  "DIKA PRATAMA",
-  "FADLAN NABIL RIFQI SYAFIQ",
-  "FAJAR DZULKARNAEN",
-  "FAQIH PANDU IRAWAN",
-  "FARIZ ARDIANTORO",
-  "GEVHANDRA MILANDO",
-  "HENDRA KURNIAWAN",
-  "INTAN BARO MAHARANI",
-  "KEYSIA PUTRI HANDAYANI",
-  "MARCEL ADITYA",
-  "MELIANA TISTA",
-  "MUHAMAD FAREL RADITYA",
-  "MUHAMMAD AGIL SAPUTRA",
-  "MUHAMMAD ASFA ALDIKA",
-  "MUHAMMAD HAFFIYAN ZASIN",
-  "NINGRUM NUR ANNISA",
-  "RADITYA TEGAR",
-  "RAFFI GALIH PRASETYO",
-  "RAKA RESKIADITIA HALTARA",
-  "RIO ZET MIKO",
-  "ROMULA RAJIDIN SYAKURTA",
-  "SYAMSUL ANWAR ARAFI",
-  "VINZA ADITYA RAMADHAN"
-],
-
-"XI-DPIB-2": [
-  "ADZKIA PURNOMO",
-  "AFDAL NUR ROHIM",
-  "AISYA AZZAHRA SINTIA",
-  "ANDI SETIAWAN",
-  "ARBA FIRMANSYAH",
-  "ARDA JEPRIYAN SYACH",
-  "AZIZ MAULANA ISHAK",
-  "DIKKY DWI WIBOWO",
-  "FADLI AZKA RAMANDIKA",
-  "FAHRIZA RISWANDI",
-  "FAREL PUTRA RAMADHAN",
-  "GILANG SETIA AN",
-  "INKA NABILA",
-  "INNA RAFFA FIRIZKU SUBING",
-  "IRWAN SAPUTRA",
-  "MUHAMMAD IQBAL MAULANA",
-  "MUHAMMAD NANDA ARYA REZA",
-  "MUHAMMAD SYAHRUL MUNIR",
-  "MUHAMMAD TAUFIQUZZIYAD",
-  "NAIFA MEZZALUNA RAMADHANI",
-  "NOVAL KHOIRUL EFENDI",
-  "PANDU ADJIE DINATA",
-  "QOIS NUR RAHMAN",
-  "RAMA YOGA PRATAMA",
-  "REFI ARTIKASARI",
-  "RISKA RAHMAWARDANI",
-  "RIZKY ADITYA",
-  "RIZKY PRATAMA",
-  "SITI RAHMAWATI",
-  "SULTAN PASHA ALTAFA",
-  "TIRTA NUR KHOIRUDIN",
-  "VENY FERAWATI",
-  "YUSUF RAMA WINATA",
-  "ZHULFA ANISA RAYIKINANTI"
-],
-
-"XII-DPIB-1": [
-  "AGUS MAULANA IKHSAN",
-  "APRILIA DWI LESTARI",
-  "AZ ZAHRA ANNISA",
-  "CAHAYA WULANDARI",
-  "CLAUDIA DHIZA SHEZA MALIKA",
-  "DAMAR DWI BIMANDIKA",
-  "DUWI NOFI WULANDARI",
-  "LARASATI CAHYANING PUTRI HERNADI",
-  "MUHAMAD LUTFI PRATAMA",
-  "MUHAMMAD IHCAN ILHAM",
-  "MUHAMMAD RIZKY",
-  "NADIA NURUL AFIFA",
-  "NAWANG AUFA QUROTA AKYUN",
-  "QURROTA A'YUN",
-  "RAIHAN HAKIM",
-  "WANTI RAHMADANI",
-  "WIDYA FADILLA ALBADRI",
-  "AGNA KHOIRUL NISA",
-  "ALL SHELLA VIERRANITHA AGLISKA",
-  "CITRA ASTI MUTIA",
-  "DAFFA KHUSNUREZA",
-  "DAVA PURNIAWANDA",
-  "DINI RAHMADANI",
-  "EGI LISTIANTI",
-  "FINKA INDAH ANGGRAINI",
-  "HERLIZA AWANDA OCTARA",
-  "KEYSHA ALLIFIA KHAIRUNISA",
-  "M. PASYA FAUZI SOPIAN",
-  "MUHAMMAD DHAFA",
-  "RADITYA FEBRIANZA RIZANTHA",
-  "RAFI DEBI ASMARA",
-  "RENO ANDRE SAPUTRA",
-  "REZA NURUL SAFITRI",
-  "SAFIRA",
-  "VIRGIAWAN LISTIANTO"
-],
-
-"XII-DPIB-2": [
-  "ADLY YOVI SAPUTRA",
-  "ANDREA DWI FERLIANSYAH",
-  "BAYHAQQI RAFLI",
-  "BAYU CATUR WIJANARKO",
-  "GALANG SATRIA PUTRA",
-  "IQBAL FERDIANSYAH",
-  "LEO CHANDRA JAYA KESUMA",
-  "LUCKY HERMAWAN",
-  "MAULANA ABIYYU FAQIH",
-  "MUHAMMAD FANI PRAJA MANDALA",
-  "MUHAMMAD RAIHAN WIRAYUDA",
-  "MUHAMMAD RISKY SYAPUTRA",
-  "NABILA",
-  "NASYA RAHMAWATI",
-  "NESYA KURNIA SARI",
-  "RAMADHAN ERLANG KHADAFI",
-  "REVAN SEBASTIAN BELANDRI",
-  "SISKA ANGGRAINI",
-  "ADIKA ANANTA RAMLI",
-  "AGAM PRASETIA JAYA",
-  "ALIF DWI KUNCORO",
-  "ALIFIA AULIA AMANDA",
-  "ARIA AGUNG PRASETIO",
-  "DIMAS MUHAMMAD AFRIZAL",
-  "DUWI SANTIKA",
-  "ESTER ROMAULI SIMATUPANG",
-  "FIBRI LYIANA",
-  "GALANG SAPUTRA",
-  "GLEND ANDIKA PRATAMA",
-  "GUSTI SONA ZULYAN PRATAMA",
-  "HAYDEN RIO SAPUTRA",
-  "MUHAMAD ARIF ALDO MAULANA",
-  "NOVITA SARI",
-  "PIRMANSYAH",
-  "ROMLI AFFANDI",
-  "YUNITA AGUSTINA"
-]
-
+            "X-DPIB-1": ["ADAM ILHAM DARMAWAN", "AGUNG SATRIA UTAMA", "AGUSTINA", "AINUL MARDIAH", "ALDIANO AFANDY", "ALI FAHMI SETIOSO", "AMELIA BUNGA SAFITRI", "ANDIKA DWI SAPUTRA", "ARI NANDA FEFRIAN", "BAYU AHMAD NUR IMAN", "CHANDRA WIRA ATMAJA", "DAFFA SAUQI", "DEBY ORLANDO PRATAMA", "DINO AFRIAN", "DZAIDAN AKMAL PRATAMA", "EKA SETYAWAN", "ELSYA ALFIANI", "FADLAN NABIL RIFQI SYAFIQ", "FHAREL HARDINATA M. NUR", "HANDY RYDHO WIJAYA", "IKA AGUSTINA", "INTAN NURAINI", "JANA SURYANA", "KHARISMA DINDA RAMADHANI", "M. LUTHFI MAULANA", "MUHAMMAD FADLI", "MUHAMMAD HAIQAL", "NESYA NANDINI", "NUUR MIFTAHUL JAUHAR", "PUTRI ADELINA FERANI", "PUTRI TANSYIER DEWI", "RAKA DRIMAHEZA", "RAYHAN RAYNANDA", "REHAN ADI PRASETIO", "RIKO ALFANANDO", "SHAFIRA NUR AZIZAH", "VIKA HERAWATI"],
+            "X-DPIB-2": ["ADONIS NANDHITO", "AGUSTIAN FERNANDO", "AIKO ALVIZAUDRI KENATRA", "AKHMAD RIZKY MURTADO", "ALFINO PRAMANTA", "ALIFAH KUSUMA WARDANI", "ANDHIKA AZIZ PRATAMA", "ARETHA ZHIE ZHIE. S", "AULIA FEBRIYANA", "CAHAYA PUTRI MARIONA", "CHILA VIECHO NURHIDAYAH", "DAVA DANIL PARESA", "DIKA SAPUTRA", "DIVA APRILIA", "EKA PUTRA WIJAYA", "ELLAS TIRTA SAVANA", "FAIZ AL QORNI HAKIM", "GILANG SETIA AN", "HAFIZAH SETIA RAMADANI", "HENKY TRIYAN SYAH", "ILHAM DINATA", "JAENAL SOBIRIN", "KAYLA KANIA ALVIONA", "LUTHFI HANIF", "MELA NOVALIA", "MUHAMMAD FAHRI", "MUHAMMAD RAFLY AL - FAHREZY", "NINO OKTAVIANO SAPUTRA", "OSCHAR PARULIAN TAMPUBOLON", "PUTRI FEBRIANI", "RAHMAD RAMADAN", "RAMDA WIRAKKA PRATAMA", "REFAL FIRMANSYAH", "RIKA SAPUTRI", "SELFI MEDIARI A.ZYAHRA", "THOLIB ABDUL ALIM", "ZAHRA AMELIA"],
+            "XI-DPIB-1": ["ABI DWI ARYANSYAH", "ADRIAN JULY SAPUTRA", "AGNES FIDELA ASMARA", "AHMAD FAQIH HUNTELAAR", "AININ DINIYA HAQQI", "ALVIN ANDRY PRATAMA", "ANGGIA FAULINA", "AZZAHRA KAYLA NURANISA", "BAGUS TRI PUJIANTO", "CELVIN NIKO PRATAMA", "DANI FIRMANSYAH", "DIKA PRATAMA", "FADLAN NABIL RIFQI SYAFIQ", "FAJAR DZULKARNAEN", "FAQIH PANDU IRAWAN", "FARIZ ARDIANTORO", "GEVHANDRA MILANDO", "HENDRA KURNIAWAN", "INTAN BARO MAHARANI", "KEYSIA PUTRI HANDAYANI", "MARCEL ADITYA", "MELIANA TISTA", "MUHAMAD FAREL RADITYA", "MUHAMMAD AGIL SAPUTRA", "MUHAMMAD ASFA ALDIKA", "MUHAMMAD HAFFIYAN ZASIN", "NINGRUM NUR ANNISA", "RADITYA TEGAR", "RAFFI GALIH PRASETYO", "RAKA RESKIADITIA HALTARA", "RIO ZET MIKO", "ROMULA RAJIDIN SYAKURTA", "SYAMSUL ANWAR ARAFI", "VINZA ADITYA RAMADHAN"],
+            "XI-DPIB-2": ["ADZKIA PURNOMO", "AFDAL NUR ROHIM", "AISYA AZZAHRA SINTIA", "ANDI SETIAWAN", "ARBA FIRMANSYAH", "ARDA JEPRIYAN SYACH", "AZIZ MAULANA ISHAK", "DIKKY DWI WIBOWO", "FADLI AZKA RAMANDIKA", "FAHRIZA RISWANDI", "FAREL PUTRA RAMADHAN", "GILANG SETIA AN", "INKA NABILA", "INNA RAFFA FIRIZKU SUBING", "IRWAN SAPUTRA", "MUHAMMAD IQBAL MAULANA", "MUHAMMAD NANDA ARYA REZA", "MUHAMMAD SYAHRUL MUNIR", "MUHAMMAD TAUFIQUZZIYAD", "NAIFA MEZZALUNA RAMADHANI", "NOVAL KHOIRUL EFENDI", "PANDU ADJIE DINATA", "QOIS NUR RAHMAN", "RAMA YOGA PRATAMA", "REFI ARTIKASARI", "RISKA RAHMAWARDANI", "RIZKY ADITYA", "RIZKY PRATAMA", "SITI RAHMAWATI", "SULTAN PASHA ALTAFA", "TIRTA NUR KHOIRUDIN", "VENY FERAWATI", "YUSUF RAMA WINATA", "ZHULFA ANISA RAYIKINANTI"],
+            "XII-DPIB-1": ["AGUS MAULANA IKHSAN", "APRILIA DWI LESTARI", "AZ ZAHRA ANNISA", "CAHAYA WULANDARI", "CLAUDIA DHIZA SHEZA MALIKA", "DAMAR DWI BIMANDIKA", "DUWI NOFI WULANDARI", "LARASATI CAHYANING PUTRI HERNADI", "MUHAMAD LUTFI PRATAMA", "MUHAMMAD IHCAN ILHAM", "MUHAMMAD RIZKY", "NADIA NURUL AFIFA", "NAWANG AUFA QUROTA AKYUN", "QURROTA A'YUN", "RAIHAN HAKIM", "WANTI RAHMADANI", "WIDYA FADILLA ALBADRI", "AGNA KHOIRUL NISA", "ALL SHELLA VIERRANITHA AGLISKA", "CITRA ASTI MUTIA", "DAFFA KHUSNUREZA", "DAVA PURNIAWANDA", "DINI RAHMADANI", "EGI LISTIANTI", "FINKA INDAH ANGGRAINI", "HERLIZA AWANDA OCTARA", "KEYSHA ALLIFIA KHAIRUNISA", "M. PASYA FAUZI SOPIAN", "MUHAMMAD DHAFA", "RADITYA FEBRIANZA RIZANTHA", "RAFI DEBI ASMARA", "RENO ANDRE SAPUTRA", "REZA NURUL SAFITRI", "SAFIRA", "VIRGIAWAN LISTIANTO"],
+            "XII-DPIB-2": ["ADLY YOVI SAPUTRA", "ANDREA DWI FERLIANSYAH", "BAYHAQQI RAFLI", "BAYU CATUR WIJANARKO", "GALANG SATRIA PUTRA", "IQBAL FERDIANSYAH", "LEO CHANDRA JAYA KESUMA", "LUCKY HERMAWAN", "MAULANA ABIYYU FAQIH", "MUHAMMAD FANI PRAJA MANDALA", "MUHAMMAD RAIHAN WIRAYUDA", "MUHAMMAD RISKY SYAPUTRA", "NABILA", "NASYA RAHMAWATI", "NESYA KURNIA SARI", "RAMADHAN ERLANG KHADAFI", "REVAN SEBASTIAN BELANDRI", "SISKA ANGGRAINI", "ADIKA ANANTA RAMLI", "AGAM PRASETIA JAYA", "ALIF DWI KUNCORO", "ALIFIA AULIA AMANDA", "ARIA AGUNG PRASETIO", "DIMAS MUHAMMAD AFRIZAL", "DUWI SANTIKA", "ESTER ROMAULI SIMATUPANG", "FIBRI LYIANA", "GALANG SAPUTRA", "GLEND ANDIKA PRATAMA", "GUSTI SONA ZULYAN PRATAMA", "HAYDEN RIO SAPUTRA", "MUHAMAD ARIF ALDO MAULANA", "NOVITA SARI", "PIRMANSYAH", "ROMLI AFFANDI", "YUNITA AGUSTINA"]
         };
 
-        // Logic Peminjaman List
         window.listAntrean = [];
 
-        // Realtime Listener
         const q = query(collection(db, "peminjaman_dpib"), where("status", "==", "DIPINJAM"));
         onSnapshot(q, (snapshot) => {
             const tbody = document.getElementById('tabel-peminjaman');
@@ -654,26 +427,26 @@
             snapshot.forEach(doc => {
                 const item = doc.data();
                 tbody.innerHTML += `
-                    <tr>
+                    <tr class="row-peminjaman">
                         <td class="text-center"><input type="checkbox" class="checkbox-kembali accent-yellow-500" value="${doc.id}"></td>
                         <td class="font-data">${item.tanggal}</td>
-                        <td class="font-bold">${item.nama} <br> <span class="text-blue-500 font-normal">${item.kelas} ${item.jurusan || ''}</span></td>
+                        <td class="font-bold cell-nama">${item.nama} <br> <span class="text-blue-500 font-normal">${item.kelas} ${item.jurusan || ''}</span></td>
                         <td class="text-yellow-500">${item.alat}</td>
-                        <td class="text-center font-bold">${item.kode}</td>
+                        <td class="text-center font-bold cell-kode">${item.kode}</td>
                         <td class="text-center"><span class="bg-red-900 text-white px-2 py-0.5 rounded text-[10px]">PINJAM</span></td>
                     </tr>
                 `;
             });
+            // Jalankan filter setelah snapshot update jika sedang mengetik
+            filterTabelKembali();
         });
     </script>
 
     <script>
-        // State Stepper
         let currentStep = 1;
         let selectedPeminjam = { nama: '', kelas: '', jurusan: '' };
         let selectedAlatName = '';
 
-        // Search Logic
         const searchInput = document.getElementById('search-nama');
         const searchResults = document.getElementById('search-results');
 
@@ -716,13 +489,29 @@
             searchResults.appendChild(manual);
         });
 
+        // Filter Function untuk Pengembalian Alat
+        function filterTabelKembali() {
+            const namaFilter = document.getElementById('cari-nama-kembali').value.toLowerCase();
+            const kodeFilter = document.getElementById('cari-kode-kembali').value.toLowerCase();
+            const rows = document.querySelectorAll('.row-peminjaman');
+
+            rows.forEach(row => {
+                const nama = row.querySelector('.cell-nama').innerText.toLowerCase();
+                const kode = row.querySelector('.cell-kode').innerText.toLowerCase();
+                
+                if (nama.includes(namaFilter) && kode.includes(kodeFilter)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
         function openStepper(nama, kelas, jur, isManual = false) {
             currentStep = isManual ? 1 : 2;
             selectedPeminjam = { nama, kelas, jurusan: jur };
-            
             document.getElementById('display-nama').innerText = nama || 'MANUAL INPUT';
             document.getElementById('display-kelas-jurusan').innerText = (kelas ? `${kelas} ${jur}` : 'SILAKAN ISI IDENTITAS');
-            
             document.getElementById('stepper-modal').classList.remove('hidden');
             showStep(currentStep);
         }
@@ -755,12 +544,7 @@
             const alat = document.getElementById('manual-alat').value.toUpperCase();
             const jumlahRaw = document.getElementById('stepper-jumlah').value;
             const kode = document.getElementById('stepper-kode').value.toUpperCase();
-            
-            if (!alat || !kode) {
-                showModal('GAGAL', 'Alat dan Kode wajib diisi!', 'error');
-                return;
-            }
-
+            if (!alat || !kode) { showModal('GAGAL', 'Alat dan Kode wajib diisi!', 'error'); return; }
             const data = {
                 nama: selectedPeminjam.nama,
                 kelas: selectedPeminjam.kelas,
@@ -772,7 +556,6 @@
                 status: 'DIPINJAM',
                 timestamp: new Date()
             };
-
             window.listAntrean.push(data);
             updateAntreanUI();
             closeStepper();
@@ -782,11 +565,9 @@
             const body = document.getElementById('list-antrean-body');
             const count = document.getElementById('count-antrean');
             const btn = document.getElementById('btn-save-firebase');
-
             count.innerText = window.listAntrean.length;
-            
             if (window.listAntrean.length === 0) {
-                body.innerHTML = '<tr><td colspan="4" class="p-10 text-center text-gray-600 italic">Belum ada data di antrean.</td></tr>';
+                body.innerHTML = '<tr><td colspan="4" class="p-10 text-center text-gray-400 italic">Belum ada data di antrean.</td></tr>';
                 btn.disabled = true;
                 btn.classList.add('opacity-50');
             } else {
@@ -796,17 +577,13 @@
                         <tr class="hover:bg-white/5">
                             <td class="p-3">
                                 <span class="font-bold text-blue-400">${item.nama}</span><br>
-                                <span class="text-[9px] text-gray-500">${item.kelas} ${item.jurusan || ''}</span>
+                                <span class="text-[9px] text-gray-400">${item.kelas} ${item.jurusan || ''}</span>
                             </td>
                             <td class="p-3">${item.alat} (${item.jumlah})</td>
                             <td class="p-3 text-center text-yellow-500 font-bold">${item.kode}</td>
                             <td class="p-3 text-center flex items-center justify-center gap-4">
-                                <button onclick="editFromQueue(${i})" class="text-blue-400 hover:text-blue-300">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button onclick="removeFromQueue(${i})" class="text-red-500 hover:text-red-400">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                                <button onclick="editFromQueue(${i})" class="text-blue-400 hover:text-blue-300"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="removeFromQueue(${i})" class="text-red-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
@@ -818,47 +595,28 @@
 
         window.editFromQueue = (i) => {
             const item = window.listAntrean[i];
-            
-            // Set state global
             selectedPeminjam = { nama: item.nama, kelas: item.kelas, jurusan: item.jurusan };
-            
-            // Isi Field Stepper
             document.getElementById('manual-nama').value = item.nama;
             document.getElementById('manual-kelas').value = item.kelas;
             document.getElementById('manual-jurusan').value = item.jurusan;
             document.getElementById('manual-alat').value = item.alat;
             document.getElementById('stepper-jumlah').value = item.jumlah.split(' ')[0];
             document.getElementById('stepper-kode').value = item.kode;
-            
-            // Update Label Display
             document.getElementById('display-nama').innerText = item.nama;
             document.getElementById('display-kelas-jurusan').innerText = `${item.kelas} ${item.jurusan}`;
-
-            // Hapus dari antrean lama (akan masuk lagi sebagai baru saat "Tambah")
             window.listAntrean.splice(i, 1);
             updateAntreanUI();
-
-            // Buka Modal di Step Detail
             document.getElementById('stepper-modal').classList.remove('hidden');
             showStep(3);
         };
 
-        window.removeFromQueue = (i) => {
-            window.listAntrean.splice(i, 1);
-            updateAntreanUI();
-        };
+        window.removeFromQueue = (i) => { window.listAntrean.splice(i, 1); updateAntreanUI(); };
+        window.clearAntrean = () => { window.listAntrean = []; updateAntreanUI(); };
 
-        window.clearAntrean = () => {
-            window.listAntrean = [];
-            updateAntreanUI();
-        };
-
-        // Simpan Massal (Gunakan Nama sebagai ID)
         document.getElementById('btn-save-firebase').addEventListener('click', async () => {
             const btn = document.getElementById('btn-save-firebase');
             btn.innerText = "SEDANG MENGIRIM...";
             btn.disabled = true;
-
             try {
                 const batch = window.writeBatch(window.db);
                 window.listAntrean.forEach(data => {
@@ -869,7 +627,7 @@
                 await batch.commit();
                 window.listAntrean = [];
                 updateAntreanUI();
-                showModal('SUKSES', 'Data tersimpan dengan ID berbasis Nama Peminjam.', 'success');
+                showModal('SUKSES', 'Data tersimpan ke database.', 'success');
             } catch (e) {
                 showModal('ERROR', 'Gagal simpan ke database.', 'error');
             } finally {
@@ -930,14 +688,18 @@
         document.getElementById('btn-return-firebase').addEventListener('click', async () => {
             if(document.getElementById('admin-password').value !== 'lab15.30') return showModal('ERROR', 'Sandi Salah', 'error');
             const checks = document.querySelectorAll('.checkbox-kembali:checked');
+            if(checks.length === 0) return showModal('ERROR', 'Pilih minimal satu data', 'error');
             for(let c of checks) {
                 await window.updateDoc(window.doc(window.db, "peminjaman_dpib", c.value), {
                     status: 'DIKEMBALIKAN',
-                    tgl_kembali: new Date().toISOString().split('T')[0]
+                    tgl_kembali: new Date().toISOString().split('T')[0],
+                    kondisi_kembali: document.getElementById('return-condition').value
                 });
             }
             showModal('SUKSES', 'Status diperbarui', 'success');
+            document.getElementById('admin-password').value = '';
         });
     </script>
 </body>
 </html>
+
