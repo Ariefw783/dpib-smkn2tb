@@ -10,7 +10,6 @@
 
     <style>
         :root {
-            /* Perubahan warna background: tidak terlalu gelap, tidak terlalu terang */
             --bg-dark: #374151;      
             --bg-panel: #1f2937;     
             --safety-yellow: #facc15; 
@@ -28,6 +27,24 @@
                 linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
             background-size: 40px 40px;
             overflow-x: hidden;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            @page { size: A4; margin: 1cm; }
+            body { background: white !important; color: black !important; background-image: none !important; }
+            .header-industrial, .scan-bar, button, input, select, .no-print, .caution-stripes { display: none !important; }
+            #page-pengembalian { display: block !important; position: static !important; width: 100% !important; background: white !important; }
+            .bg-\[\#1f2937\], .bg-black\/50, .bg-black\/20 { background: transparent !important; border: 1px solid #ddd !important; }
+            .tech-table { width: 100% !important; border-collapse: collapse !important; color: black !important; }
+            .tech-table th { background: #eee !important; color: black !important; border: 1px solid #000 !important; }
+            .tech-table td { border: 1px solid #ddd !important; padding: 8px !important; color: black !important; }
+            .text-yellow-500, .text-blue-400 { color: black !important; font-weight: bold; }
+            .card-industrial { border: none !important; clip-path: none !important; box-shadow: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            /* Infinite page flow */
+            table { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
         }
 
         .scan-bar {
@@ -116,7 +133,7 @@
             z-index: 100; margin-top: 1px;
         }
         .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #374151; }
-        .search-item:hover { background-color: var(--tech-blue); color: black; }
+        .search-item:hover, .search-item.selected { background-color: var(--tech-blue); color: black; }
 
         .step-slide { display: none; }
         .step-slide.active { display: block; animation: slideIn 0.3s ease-out; }
@@ -257,15 +274,19 @@
 
         <!-- PAGE PENGEMBALIAN -->
         <section id="page-pengembalian" class="hidden max-w-6xl mx-auto fade-in">
-             <div class="flex justify-between items-center mb-6">
+             <div class="flex justify-between items-center mb-6 no-print">
                 <button onclick="showPage('dashboard')" class="flex items-center gap-2 text-gray-200 hover:text-white font-bold uppercase text-sm">
                     <i class="fa-solid fa-arrow-left bg-gray-800 p-2 rounded"></i> KEMBALI
                 </button>
-                <h2 class="text-2xl font-bold text-yellow-500 uppercase">PENGEMBALIAN</h2>
+                <div class="flex items-center gap-4">
+                    <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 font-bold uppercase text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> Print PDF (A4)
+                    </button>
+                    <h2 class="text-2xl font-bold text-yellow-500 uppercase">PENGEMBALIAN</h2>
+                </div>
             </div>
             <div class="bg-[#1f2937] border border-gray-700 p-1 shadow-xl">
-                <div class="bg-black/50 p-3 grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-gray-700 mb-4">
-                    <!-- Penambahan Fitur Search by Name & Search by Code -->
+                <div class="bg-black/50 p-3 grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-gray-700 mb-4 no-print">
                     <div>
                         <label class="text-[10px] text-gray-400 font-bold uppercase block mb-1">Search by Name</label>
                         <input type="text" id="cari-nama-kembali" oninput="filterTabelKembali()" placeholder="Nama Siswa..." class="w-full bg-gray-800 text-xs p-2 rounded uppercase border-l-2 border-yellow-500">
@@ -276,21 +297,24 @@
                     </div>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs tech-table font-data">
-                        <thead>
-                            <tr>
-                                <th class="w-10 text-center"><i class="fa-regular fa-square-check"></i></th>
-                                <th>Tanggal</th>
-                                <th>Nama Peminjam</th>
-                                <th>Alat</th>
-                                <th class="text-center">Kode</th>
-                                <th class="text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-peminjaman"></tbody>
-                    </table>
+                    <!-- ID khusus untuk print area -->
+                    <div id="print-area">
+                        <table class="w-full text-left text-xs tech-table font-data">
+                            <thead>
+                                <tr>
+                                    <th class="w-10 text-center no-print"><i class="fa-regular fa-square-check"></i></th>
+                                    <th>Tanggal</th>
+                                    <th>Nama Peminjam</th>
+                                    <th>Alat</th>
+                                    <th class="text-center">Kode</th>
+                                    <th class="text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-peminjaman"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="mt-8 bg-gray-800 p-6 border-t-4 border-yellow-500">
+                <div class="mt-8 bg-gray-800 p-6 border-t-4 border-yellow-500 no-print">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                         <select id="return-condition" class="w-full p-3 bg-black border border-gray-600 text-white">
                             <option value="OK">KONDISI: OK</option>
@@ -324,7 +348,7 @@
 
     <!-- STEPPER MODAL -->
     <div id="stepper-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-black/90 absolute inset-0 backdrop-blur-md"></div>
+        <div class="bg-black/90 absolute inset-0 backdrop-blur-md" onclick="closeStepper()"></div>
         <div class="relative z-10 w-full max-w-lg bg-[#111827] border-2 border-blue-500 shadow-[0_0_50px_rgba(14,165,233,0.3)]">
             <div class="caution-stripes h-2 w-full"></div>
             <div class="p-6">
@@ -340,19 +364,22 @@
                         <input type="text" id="manual-kelas" placeholder="KELAS / JURUSAN" class="p-3 uppercase">
                         <input type="text" id="manual-jurusan" placeholder="DEPARTEMEN / AREA" class="p-3 uppercase">
                     </div>
-                    <button onclick="nextStep(2)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut Pilih Alat</button>
+                    <button onclick="nextStep(2)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut Pilih Alat (Enter)</button>
                 </div>
 
                 <div id="step-2" class="step-slide">
-                    <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Pilih Alat Inventaris</h3>
+                    <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase">Pilih Alat Inventaris <span class="text-xs text-yellow-500 ml-2">(Klik Angka 1-5)</span></h3>
                     <div class="grid grid-cols-2 gap-2 mb-4">
-                        <button onclick="selectAlat('PENGGARIS')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Penggaris</button>
-                        <button onclick="selectAlat('KALKULATOR')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Kalkulator</button>
-                        <button onclick="selectAlat('MOUSE')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Mouse</button>
-                        <button onclick="selectAlat('KEYBOARD')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase">Keyboard</button>
+                        <button onclick="selectAlat('PENGGARIS')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase flex justify-between"><span>1. Penggaris</span> <span class="text-gray-500">[1]</span></button>
+                        <button onclick="selectAlat('KALKULATOR')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase flex justify-between"><span>2. Kalkulator</span> <span class="text-gray-500">[2]</span></button>
+                        <button onclick="selectAlat('MOUSE')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase flex justify-between"><span>3. Mouse</span> <span class="text-gray-500">[3]</span></button>
+                        <button onclick="selectAlat('KEYBOARD')" class="p-4 bg-black border border-gray-700 hover:border-blue-500 text-xs font-bold uppercase flex justify-between"><span>4. Keyboard</span> <span class="text-gray-500">[4]</span></button>
                     </div>
-                    <input type="text" id="manual-alat" placeholder="Input nama alat lainnya" class="w-full p-3 uppercase text-sm border-yellow-500">
-                    <button onclick="nextStep(3)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut ke Detail</button>
+                    <div class="relative">
+                        <input type="text" id="manual-alat" placeholder="5. Input nama alat lainnya" class="w-full p-3 uppercase text-sm border-yellow-500">
+                        <span class="absolute right-3 top-3 text-[10px] text-gray-500">[5]</span>
+                    </div>
+                    <button onclick="nextStep(3)" class="w-full mt-6 bg-blue-600 py-3 font-bold text-white uppercase">Lanjut ke Detail (Enter)</button>
                 </div>
 
                 <div id="step-3" class="step-slide">
@@ -365,7 +392,7 @@
                         <label class="text-[10px] font-bold text-gray-500 block mb-1">NO. KODE ALAT</label>
                         <input type="text" id="stepper-kode" placeholder="[NOMOR / KODE ALAT]" class="w-full p-4 text-center text-xl font-bold border-yellow-500 text-yellow-400 uppercase">
                     </div>
-                    <button onclick="addToQueue()" class="w-full mt-6 bg-yellow-500 py-4 font-black text-black uppercase text-lg">TAMBAH KE DAFTAR</button>
+                    <button onclick="addToQueue()" class="w-full mt-6 bg-yellow-500 py-4 font-black text-black uppercase text-lg">TAMBAH KE DAFTAR (Enter)</button>
                 </div>
             </div>
             <button onclick="closeStepper()" class="absolute -top-4 -right-4 bg-red-600 w-10 h-10 rounded-full text-white flex items-center justify-center border-4 border-[#1a1a1a]"><i class="fa-solid fa-xmark"></i></button>
@@ -378,7 +405,7 @@
         <div class="relative z-10 w-full max-w-sm bg-[#1f2937] border-2 border-white p-6 text-center shadow-2xl">
             <h3 id="modal-title" class="font-bold text-white mb-2 uppercase"></h3>
             <p id="modal-message" class="text-gray-400 text-sm mb-6"></p>
-            <button onclick="closeModal()" class="w-full bg-white text-black py-2 font-bold uppercase">Tutup</button>
+            <button onclick="closeModal()" class="w-full bg-white text-black py-2 font-bold uppercase">Tutup (Esc)</button>
         </div>
     </div>
 
@@ -428,7 +455,7 @@
                 const item = doc.data();
                 tbody.innerHTML += `
                     <tr class="row-peminjaman">
-                        <td class="text-center"><input type="checkbox" class="checkbox-kembali accent-yellow-500" value="${doc.id}"></td>
+                        <td class="text-center no-print"><input type="checkbox" class="checkbox-kembali accent-yellow-500" value="${doc.id}"></td>
                         <td class="font-data">${item.tanggal}</td>
                         <td class="font-bold cell-nama">${item.nama} <br> <span class="text-blue-500 font-normal">${item.kelas} ${item.jurusan || ''}</span></td>
                         <td class="text-yellow-500">${item.alat}</td>
@@ -437,7 +464,6 @@
                     </tr>
                 `;
             });
-            // Jalankan filter setelah snapshot update jika sedang mengetik
             filterTabelKembali();
         });
     </script>
@@ -446,13 +472,131 @@
         let currentStep = 1;
         let selectedPeminjam = { nama: '', kelas: '', jurusan: '' };
         let selectedAlatName = '';
+        let focusedSearchIndex = -1;
+        let currentPage = 'dashboard';
+
+        // HANDLING MOBILE BACK BUTTON & NAVIGATION
+        window.history.pushState({page: 'dashboard'}, "");
+        window.onpopstate = function(event) {
+            if (event.state && event.state.page) {
+                showPage(event.state.page, false);
+            } else {
+                showPage('dashboard', false);
+            }
+        };
 
         const searchInput = document.getElementById('search-nama');
         const searchResults = document.getElementById('search-results');
 
+        // KEYBOARD SHORTCUTS INTEGRATION
+        document.addEventListener('keydown', function(e) {
+            const isModalOpen = !document.getElementById('stepper-modal').classList.contains('hidden');
+            const isNotifOpen = !document.getElementById('custom-modal').classList.contains('hidden');
+
+            // ESC & ENTER for Notif Modal
+            if (isNotifOpen) {
+                if (e.key === "Escape" || e.key === "Enter") {
+                    closeModal();
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            // ESC to close Stepper
+            if (e.key === "Escape" && isModalOpen) {
+                closeStepper();
+                e.preventDefault();
+                return;
+            }
+
+            // BACKSPACE for returning
+            if (e.key === "Backspace") {
+                const activeEl = document.activeElement;
+                const isInput = activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA';
+                
+                // Only trigger back if not typing OR input is empty
+                if (!isInput || (isInput && activeEl.value === "")) {
+                    if (isModalOpen) {
+                        if (currentStep > 1) {
+                            currentStep--;
+                            showStep(currentStep);
+                            e.preventDefault();
+                        } else {
+                            closeStepper();
+                            e.preventDefault();
+                        }
+                    } else if (currentPage !== 'dashboard') {
+                        showPage('dashboard');
+                        e.preventDefault();
+                    }
+                }
+            }
+
+            // CTRL + S to save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (currentPage === 'peminjaman' && window.listAntrean.length > 0) {
+                    document.getElementById('btn-save-firebase').click();
+                }
+            }
+
+            // ENTER logic
+            if (e.key === "Enter") {
+                if (focusedSearchIndex > -1 && !searchResults.classList.contains('hidden')) {
+                    const items = searchResults.querySelectorAll('.search-item');
+                    if (items[focusedSearchIndex]) items[focusedSearchIndex].click();
+                    e.preventDefault();
+                } else if (isModalOpen) {
+                    if (currentStep === 1) nextStep(2);
+                    else if (currentStep === 2) nextStep(3);
+                    else if (currentStep === 3) addToQueue();
+                    e.preventDefault();
+                }
+            }
+
+            // NAVIGATION ARROW UP/DOWN for Search Results
+            if (!searchResults.classList.contains('hidden')) {
+                const items = searchResults.querySelectorAll('.search-item');
+                if (e.key === "ArrowDown") {
+                    focusedSearchIndex = (focusedSearchIndex + 1) % items.length;
+                    updateSearchFocus(items);
+                    e.preventDefault();
+                } else if (e.key === "ArrowUp") {
+                    focusedSearchIndex = (focusedSearchIndex - 1 + items.length) % items.length;
+                    updateSearchFocus(items);
+                    e.preventDefault();
+                }
+            }
+
+            // SHORTCUTS STEP 2 - Prevent character from bleeding into Step 3
+            if (currentStep === 2 && isModalOpen) {
+                if (["1", "2", "3", "4", "5"].includes(e.key)) {
+                    e.preventDefault(); // Critical: prevent inputting the number
+                    if (e.key === "1") selectAlat('PENGGARIS');
+                    if (e.key === "2") selectAlat('KALKULATOR');
+                    if (e.key === "3") selectAlat('MOUSE');
+                    if (e.key === "4") selectAlat('KEYBOARD');
+                    if (e.key === "5") document.getElementById('manual-alat').focus();
+                }
+            }
+        });
+
+        function updateSearchFocus(items) {
+            items.forEach((item, index) => {
+                if (index === focusedSearchIndex) {
+                    item.classList.add('selected');
+                    // Scroll automatically to selected item
+                    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
         searchInput.addEventListener('input', function() {
             const val = this.value.toLowerCase();
             searchResults.innerHTML = '';
+            focusedSearchIndex = -1;
             if (!val) { searchResults.classList.add('hidden'); return; }
 
             let matches = [];
@@ -466,7 +610,7 @@
             }
             searchResults.classList.remove('hidden');
 
-            matches.slice(0, 8).forEach(m => {
+            matches.slice(0, 8).forEach((m, idx) => {
                 const div = document.createElement('div');
                 div.className = 'search-item';
                 div.innerHTML = `<span class="font-bold">${m.nama}</span> <span class="text-[10px] text-gray-500">(${m.kelas} ${m.jur})</span>`;
@@ -489,7 +633,6 @@
             searchResults.appendChild(manual);
         });
 
-        // Filter Function untuk Pengembalian Alat
         function filterTabelKembali() {
             const namaFilter = document.getElementById('cari-nama-kembali').value.toLowerCase();
             const kodeFilter = document.getElementById('cari-kode-kembali').value.toLowerCase();
@@ -498,12 +641,8 @@
             rows.forEach(row => {
                 const nama = row.querySelector('.cell-nama').innerText.toLowerCase();
                 const kode = row.querySelector('.cell-kode').innerText.toLowerCase();
-                
-                if (nama.includes(namaFilter) && kode.includes(kodeFilter)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
+                if (nama.includes(namaFilter) && kode.includes(kodeFilter)) row.style.display = "";
+                else row.style.display = "none";
             });
         }
 
@@ -514,11 +653,17 @@
             document.getElementById('display-kelas-jurusan').innerText = (kelas ? `${kelas} ${jur}` : 'SILAKAN ISI IDENTITAS');
             document.getElementById('stepper-modal').classList.remove('hidden');
             showStep(currentStep);
+            
+            // Focus input pertama
+            setTimeout(() => {
+                if (isManual) document.getElementById('manual-nama').focus();
+            }, 100);
         }
 
         function showStep(s) {
             document.querySelectorAll('.step-slide').forEach(el => el.classList.remove('active'));
             document.getElementById('step-' + s).classList.add('active');
+            if (s === 3) document.getElementById('stepper-kode').focus();
         }
 
         function nextStep(s) {
@@ -643,11 +788,18 @@
             document.getElementById('manual-nama').value = '';
             document.getElementById('manual-kelas').value = '';
             document.getElementById('manual-jurusan').value = '';
+            currentStep = 1;
         }
 
-        function showPage(p) {
+        function showPage(p, pushState = true) {
+            currentPage = p;
             ['dashboard', 'peminjaman', 'pengembalian', 'pemakaian'].forEach(id => document.getElementById('page-'+id).classList.add('hidden'));
             document.getElementById('page-'+p).classList.remove('hidden');
+            if (pushState) window.history.pushState({page: p}, "");
+            
+            // Auto focus on page switch
+            if (p === 'peminjaman') setTimeout(() => searchInput.focus(), 300);
+            if (p === 'pengembalian') setTimeout(() => document.getElementById('cari-nama-kembali').focus(), 300);
         }
 
         function updateClock() {
@@ -689,15 +841,27 @@
             if(document.getElementById('admin-password').value !== 'lab15.30') return showModal('ERROR', 'Sandi Salah', 'error');
             const checks = document.querySelectorAll('.checkbox-kembali:checked');
             if(checks.length === 0) return showModal('ERROR', 'Pilih minimal satu data', 'error');
-            for(let c of checks) {
-                await window.updateDoc(window.doc(window.db, "peminjaman_dpib", c.value), {
-                    status: 'DIKEMBALIKAN',
-                    tgl_kembali: new Date().toISOString().split('T')[0],
-                    kondisi_kembali: document.getElementById('return-condition').value
-                });
+            
+            const btn = document.getElementById('btn-return-firebase');
+            btn.innerText = "PROCESSING...";
+            btn.disabled = true;
+
+            try {
+                for(let c of checks) {
+                    await window.updateDoc(window.doc(window.db, "peminjaman_dpib", c.value), {
+                        status: 'DIKEMBALIKAN',
+                        tgl_kembali: new Date().toISOString().split('T')[0],
+                        kondisi_kembali: document.getElementById('return-condition').value
+                    });
+                }
+                showModal('SUKSES', 'Status diperbarui', 'success');
+                document.getElementById('admin-password').value = '';
+            } catch (e) {
+                showModal('ERROR', 'Gagal update database', 'error');
+            } finally {
+                btn.innerText = "PROSES KEMBALI";
+                btn.disabled = false;
             }
-            showModal('SUKSES', 'Status diperbarui', 'success');
-            document.getElementById('admin-password').value = '';
         });
     </script>
 </body>
