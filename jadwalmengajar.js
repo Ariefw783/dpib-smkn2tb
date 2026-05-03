@@ -1,0 +1,13 @@
+// MASTER DATA GURU & JADWAL
+const TEACHERS = [
+    { name: "AGUS WARDOYO, S.T.", schedule: { "Senin": [{ hours: [1,5], class: "XI TKP 1" }], "Kamis": [{ hours: [1,5], class: "XII TKP 2" }], "Jumat": [{ hours: [1,5], class: "XII TKP 1" }] } },
+    { name: "HARYADI, S.T.", schedule: { "Senin": [{ hours: [6,10], class: "XII TKP 2" }], "Selasa": [{ hours: [1,5], class: "XII DPIB 1" }, { hours: [7,10], class: "XI DPIB 2" }], "Rabu": [{ hours: [1,5], class: "XII TKP 1" }, { hours: [7,10], class: "XI DPIB 1" }], "Kamis": [{ hours: [1,5], class: "XII DPIB 2" }] } },
+    { name: "MAYEZA EKA PUTRA, S.Ars.", schedule: { "Senin": [{ hours: [1,12], class: "X TKP 1" }], "Rabu": [{ hours: [1,4], class: "XI DPIB 2" }, { hours: [6,9], class: "XII TKP 1" }], "Jumat": [{ hours: [1,4], class: "XII TKP 2" }, { hours: [6,9], class: "XI DPIB 1" }] } },
+    { name: "NITA YULIANTI, S.T.", schedule: { "Selasa": [{ hours: [4,11], class: "XII TKP 1" }], "Rabu": [{ hours: [1,8], class: "XII TKP 2" }], "Jumat": [{ hours: [1,10], class: "XI TKP 1" }] } },
+    { name: "SIGIT KRISTIAWAN, S.T.", schedule: { "Senin": [{ hours: [1,10], class: "XI DPIB 2" }], "Rabu": [{ hours: [1,5], class: "XII DPIB 1" }], "Kamis": [{ hours: [1,10], class: "XI DPIB 1" }], "Jumat": [{ hours: [1,5], class: "XII DPIB 2" }] } },
+    { name: "SLAMET HARYANTO, S.T.", schedule: { "Selasa": [{ hours: [1,8], class: "XI TKP 1" }] } },
+    { name: "SUDARSONO, S.T., M.M.Pd.", schedule: { "Selasa": [{ hours: [3,6], class: "XI DPIB 2" }], "Rabu": [{ hours: [3,6], class: "XI DPIB 1" }], "Kamis": [{ hours: [1,10], class: "XII DPIB 2" }] } },
+    { name: "SURATMAN, S.T.", schedule: { "Senin": [{ hours: [1,5], class: "XII TKP 2" }, { hours: [6,9], class: "XI TKP 1" }], "Selasa": [{ hours: [6,10], class: "XII DPIB 1" }], "Rabu": [{ hours: [5,9], class: "XI DPIB 2" }], "Kamis": [{ hours: [1,5], class: "XII TKP 1" }, { hours: [6,10], class: "XII DPIB 2" }], "Jumat": [{ hours: [1,5], class: "XI DPIB 1" }] } },
+    { name: "UNTUNG HERMAWAN, S.T.", schedule: { "Selasa": [{ hours: [1,12], class: "X DPIB 1" }], "Rabu": [{ hours: [6,9], class: "XII DPIB 1" }], "Kamis": [{ hours: [1,12], class: "X DPIB 2" }], "Jumat": [{ hours: [6,9], class: "XII DPIB 2" }] } },
+    { name: "YULIDAR EFENDI, S.T.", schedule: { "Senin": [{ hours: [1,12], class: "XII DPIB 1" }], "Rabu": [{ hours: [1,12], class: "XII DPIB 2" }], "Kamis": [{ hours: [6,9], class: "XII TKP 2" }], "Jumat": [{ hours: [6,9], class: "XII TKP 1" }] } }
+];

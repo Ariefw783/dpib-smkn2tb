@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Siswa | DPIB DIGITAL HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Link ke file data JS -->
+    <script src="datasiswa.js"></script>
+
+    <style>
+        :root {
+            --bg-deep: #0f172a;
+            --accent-cyan: #06b6d4;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Chakra Petch', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+                linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)),
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            min-height: 100vh;
+        }
+
+        .data-table-container {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+
+        /* Dropdown styling */
+        select.search-box option {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .caution-bar {
+            background: repeating-linear-gradient(45deg, #000, #000 10px, var(--accent-cyan) 10px, var(--accent-cyan) 20px);
+        }
+
+        tr { transition: background 0.2s ease; }
+        tr:hover { background: rgba(255, 255, 255, 0.02); }
+        
+        .btn-back, .btn-action {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .btn-back:hover, .btn-action:hover {
+            background: var(--accent-cyan);
+            color: black;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+
+        /* Print Styles */
+        @media print {
+            @page { size: A4; margin: 1cm; }
+            body { background: white !important; color: black !important; background-image: none !important; font-family: Arial, Helvetica, sans-serif !important; }
+            .no-print { display: none !important; }
+            .data-table-container { border: none !important; background: white !important; backdrop-filter: none !important; overflow: visible !important; }
+            table { width: 100% !important; border-collapse: collapse !important; border: 1px solid black !important; }
+            th, td { border: 1px solid black !important; color: black !important; padding: 4px 8px !important; text-transform: uppercase !important; font-size: 9pt !important; }
+            th { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; }
+            .print-header { display: block !important; text-align: center; margin-bottom: 20px; color: black; }
+            .status-col { display: none !important; }
+            
+            /* Assessment mode - force to fit 1 page */
+            .assessment-mode td { padding: 2px 4px !important; font-size: 8pt !important; height: 25px; }
+            .assessment-mode th { font-size: 7pt !important; padding: 4px 2px !important; }
+        }
+        .print-header { display: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="border-b border-white/5 bg-slate-950/50 backdrop-blur-md sticky top-0 z-50 no-print">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="btn-back w-10 h-10 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tighter uppercase leading-none">DATABASE SISWA</h1>
+                    <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mt-1">DPIB SMKN 2 Terbanggi Besar</p>
+                </div>
+            </div>
+            
+            <div class="hidden md:block font-mono text-xs text-gray-500">
+                SYSTEM_ID: DPIB-DB-2026
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Print Header -->
+        <div class="print-header">
+            <h2 id="printTitleMain" class="text-xl font-bold uppercase">DAFTAR SISWA DPIB</h2>
+            <p class="text-sm">SMK NEGERI 2 TERBANGGI BESAR</p>
+            <p id="printSubTitle" class="text-xs italic mt-1"></p>
+            <hr class="my-4 border-black">
+        </div>
+
+        <!-- Search Filters -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 no-print">
+            <div class="search-box rounded-xl p-1 flex items-center px-4">
+                <i class="fa-solid fa-user text-gray-500 mr-3"></i>
+                <input type="text" id="searchNama" placeholder="CARI NAMA..." class="bg-transparent w-full py-3 text-sm focus:outline-none uppercase font-bold tracking-wider">
+            </div>
+            <div class="search-box rounded-xl p-1 flex items-center px-4">
+                <i class="fa-solid fa-id-card text-gray-500 mr-3"></i>
+                <input type="text" id="searchNis" placeholder="CARI NIS..." class="bg-transparent w-full py-3 text-sm focus:outline-none uppercase font-bold tracking-wider">
+            </div>
+            <div class="search-box rounded-xl p-1 flex items-center px-4">
+                <i class="fa-solid fa-layer-group text-gray-500 mr-3"></i>
+                <select id="filterTingkat" class="search-box bg-transparent w-full py-3 text-sm focus:outline-none uppercase font-bold tracking-wider cursor-pointer border-none">
+                    <option value="">TINGKAT (SEMUA)</option>
+                    <option value="X">KELAS X</option>
+                    <option value="XI">KELAS XI</option>
+                    <option value="XII">KELAS XII</option>
+                </select>
+            </div>
+            <div class="search-box rounded-xl p-1 flex items-center px-4">
+                <i class="fa-solid fa-school text-gray-500 mr-3"></i>
+                <select id="filterJurusan" class="search-box bg-transparent w-full py-3 text-sm focus:outline-none uppercase font-bold tracking-wider cursor-pointer border-none">
+                    <option value="">JURUSAN (SEMUA)</option>
+                    <option value="DPIB-1">DPIB 1</option>
+                    <option value="DPIB-2">DPIB 2</option>
+                    <option value="TKP-1">TKP 1</option>
+                    <option value="TKP-2">TKP 2</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 no-print">
+            <button onclick="handlePrint('default')" class="btn-action rounded-xl py-4 px-6 text-xs font-black uppercase tracking-widest flex items-center justify-center gap-3">
+                <i class="fa-solid fa-print"></i> Cetak Data Terfilter
+            </button>
+            <div class="flex gap-2">
+                <button onclick="handlePrint('penilaian')" class="btn-action flex-grow rounded-xl py-4 px-6 text-xs font-black uppercase tracking-widest flex items-center justify-center gap-3 !bg-cyan-500/10 !border-cyan-500/30 !text-cyan-400 hover:!bg-cyan-500 hover:!text-black">
+                    <i class="fa-solid fa-clipboard-check"></i> Format Penilaian
+                </button>
+                <div class="search-box rounded-xl p-1 flex items-center px-3 w-32" title="Jumlah Kolom Nilai">
+                    <input type="number" id="kolomNilai" value="5" min="1" max="15" class="bg-transparent w-full text-center text-sm focus:outline-none font-bold">
+                </div>
+                <div class="search-box rounded-xl p-1 flex items-center px-3 w-40">
+                    <select id="showNisPrint" class="search-box bg-transparent w-full text-[10px] focus:outline-none font-bold uppercase border-none">
+                        <option value="ya">NIS Tampil</option>
+                        <option value="tidak">NIS Sembunyi</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="data-table-container rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse" id="mainTable">
+                    <thead>
+                        <tr id="headerRow" class="bg-white/5 text-[10px] uppercase tracking-[0.2em] font-black text-cyan-400">
+                            <th class="px-6 py-5 border-b border-white/5">No</th>
+                            <th class="px-6 py-5 border-b border-white/5">Nama Lengkap</th>
+                            <th class="px-6 py-5 border-b border-white/5">NIS / NISN</th>
+                            <th class="px-6 py-5 border-b border-white/5 text-center">Kelas</th>
+                            <th class="px-6 py-5 border-b border-white/5 text-right status-col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="siswaTableBody" class="text-sm font-medium">
+                        <!-- Data diisi via JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="noResults" class="hidden p-20 text-center flex flex-col items-center justify-center no-print">
+                <i class="fa-solid fa-magnifying-glass text-4xl text-gray-700 mb-4"></i>
+                <p class="text-gray-500 uppercase tracking-widest font-bold">Data Tidak Ditemukan</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-auto no-print">
+        <div class="caution-bar h-1 w-full"></div>
+        <div class="bg-slate-950 py-6 px-6">
+            <div class="container mx-auto flex justify-between items-center">
+                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">© 2026 SMK NEGERI 2 TERBANGGI BESAR</p>
+                <div id="dataCount" class="text-[9px] font-black text-cyan-500 uppercase bg-cyan-500/10 px-3 py-1 rounded-full">
+                    Total: 0 Siswa
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Alert -->
+    <div id="alertModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4 no-print">
+        <div class="bg-slate-900 border border-cyan-500/30 p-8 rounded-2xl max-w-sm w-full text-center">
+            <i class="fa-solid fa-triangle-exclamation text-4xl text-yellow-500 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2 uppercase">Gagal Mencetak</h3>
+            <p id="alertMsg" class="text-gray-400 text-sm mb-6 uppercase tracking-wider">Silakan pilih Tingkat dan Jurusan terlebih dahulu.</p>
+            <button onclick="closeModal()" class="w-full bg-cyan-500 text-black font-black py-3 rounded-lg uppercase text-xs tracking-widest">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        let allSiswa = [];
+        let currentFiltered = [];
+        
+        function initData() {
+            const db = window.databaseSiswa || {};
+            allSiswa = [];
+            
+            Object.keys(db).forEach(kelas => {
+                db[kelas].forEach(nama => {
+                    allSiswa.push({
+                        nama: nama,
+                        nis: "-",
+                        kelas: kelas
+                    });
+                });
+            });
+            
+            currentFiltered = [...allSiswa];
+            renderTable(currentFiltered);
+        }
+
+        const tableBody = document.getElementById('siswaTableBody');
+        const noResults = document.getElementById('noResults');
+        const countDisplay = document.getElementById('dataCount');
+
+        function renderTable(data, mode = 'default') {
+            tableBody.innerHTML = '';
+            const headerRow = document.getElementById('headerRow');
+            const tableElement = document.getElementById('mainTable');
+            const showNis = document.getElementById('showNisPrint').value === 'ya';
+            
+            tableElement.classList.remove('assessment-mode');
+
+            if (mode === 'penilaian') {
+                tableElement.classList.add('assessment-mode');
+                const colCount = parseInt(document.getElementById('kolomNilai').value) || 5;
+                let scoreHeaders = '';
+                for(let i=1; i<=colCount; i++) scoreHeaders += `<th class="border-b border-black text-center w-8">N${i}</th>`;
+                
+                headerRow.innerHTML = `
+                    <th class="px-2 py-4 border-b border-black w-8 text-center">No</th>
+                    <th class="px-4 py-4 border-b border-black">Nama Lengkap</th>
+                    ${showNis ? '<th class="px-4 py-4 border-b border-black w-24">NIS</th>' : ''}
+                    ${scoreHeaders}
+                `;
+
+                data.forEach((siswa, index) => {
+                    let scoreCells = '';
+                    for(let i=1; i<=colCount; i++) scoreCells += `<td class="border-b border-black"></td>`;
+                    const row = `
+                        <tr class="border-b border-black">
+                            <td class="px-2 py-2 text-center font-mono text-[9px]">${index + 1}</td>
+                            <td class="px-4 py-2 uppercase font-bold text-[9px] tracking-tight">${siswa.nama}</td>
+                            ${showNis ? `<td class="px-4 py-2 font-mono text-[9px]">${siswa.nis}</td>` : ''}
+                            ${scoreCells}
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } else {
+                headerRow.innerHTML = `
+                    <th class="px-6 py-5 border-b border-white/5">No</th>
+                    <th class="px-6 py-5 border-b border-white/5">Nama Lengkap</th>
+                    <th class="px-6 py-5 border-b border-white/5">NIS / NISN</th>
+                    <th class="px-6 py-5 border-b border-white/5 text-center">Kelas</th>
+                    <th class="px-6 py-5 border-b border-white/5 text-right status-col">Status</th>
+                `;
+
+                data.forEach((siswa, index) => {
+                    const row = `
+                        <tr class="border-b border-white/5 group">
+                            <td class="px-6 py-4 text-gray-500 font-mono text-xs">${index + 1}</td>
+                            <td class="px-6 py-4 uppercase font-bold tracking-tight">${siswa.nama}</td>
+                            <td class="px-6 py-4 text-gray-400 font-mono text-xs">${siswa.nis}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded text-[10px] font-black uppercase">
+                                    ${siswa.kelas}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right status-col">
+                                <span class="text-green-500 text-[10px] font-black uppercase tracking-tighter">
+                                    <i class="fa-solid fa-circle-check mr-1"></i> Terverifikasi
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            }
+            
+            if (data.length === 0) noResults.classList.remove('hidden');
+            else noResults.classList.add('hidden');
+            
+            countDisplay.innerText = `TOTAL: ${data.length} SISWA`;
+        }
+
+        function filterData() {
+            const fNama = document.getElementById('searchNama').value.toLowerCase();
+            const fNis = document.getElementById('searchNis').value.toLowerCase();
+            const fTingkat = document.getElementById('filterTingkat').value;
+            const fJurusan = document.getElementById('filterJurusan').value;
+
+            currentFiltered = allSiswa.filter(s => {
+                const matchNama = s.nama.toLowerCase().includes(fNama);
+                const matchNis = s.nis.toString().toLowerCase().includes(fNis);
+                const matchTingkat = fTingkat === "" || s.kelas.startsWith(fTingkat + "-");
+                const matchJurusan = fJurusan === "" || s.kelas.endsWith("-" + fJurusan);
+                
+                return matchNama && matchNis && matchTingkat && matchJurusan;
+            });
+            
+            renderTable(currentFiltered);
+        }
+
+        function handlePrint(type) {
+            const fTingkat = document.getElementById('filterTingkat').value;
+            const fJurusan = document.getElementById('filterJurusan').value;
+
+            if (type === 'penilaian') {
+                if (!fTingkat || !fJurusan) {
+                    showModal("Pilih Tingkat dan Jurusan (bukan SEMUA) untuk format penilaian.");
+                    return;
+                }
+                document.getElementById('printTitleMain').innerText = "FORMAT PENILAIAN SISWA";
+                document.getElementById('printSubTitle').innerText = `KELAS: ${fTingkat} ${fJurusan.replace('-', ' ')} | TANGGAL: _________________`;
+                renderTable(currentFiltered, 'penilaian');
+            } else {
+                document.getElementById('printTitleMain').innerText = "DAFTAR DATA SISWA DPIB";
+                document.getElementById('printSubTitle').innerText = `FILTER: ${fTingkat || 'SEMUA'} | ${fJurusan.replace('-', ' ') || 'SEMUA'}`;
+                renderTable(currentFiltered, 'default');
+            }
+
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => renderTable(currentFiltered, 'default'), 500);
+            }, 300);
+        }
+
+        function showModal(msg) {
+            document.getElementById('alertMsg').innerText = msg;
+            document.getElementById('alertModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+
+        // Event Listeners
+        document.getElementById('searchNama').addEventListener('input', filterData);
+        document.getElementById('searchNis').addEventListener('input', filterData);
+        document.getElementById('filterTingkat').addEventListener('change', filterData);
+        document.getElementById('filterJurusan').addEventListener('change', filterData);
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && document.activeElement.tagName !== 'INPUT') {
+                window.location.href = 'index.html';
+            }
+        });
+
+        window.onload = initData;
+    </script>
+</body>
+</html>

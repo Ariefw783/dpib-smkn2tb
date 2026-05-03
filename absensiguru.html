@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Guru TKP DPIB - SMKN2TB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Firebase SDK Compat (Required for integration) -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --soft-blue-bg: #f1f7ff;
+            --weekend-yellow: #fffbeb;
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--soft-blue-bg); 
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(37, 99, 235, 0.15) 1px, transparent 0);
+            background-size: 32px 32px;
+            color: #1e293b;
+        }
+
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 50; }
+        .sidebar-closed { transform: translateX(-100%); }
+        
+        .report-table { border-collapse: separate; border-spacing: 0; min-width: 100%; }
+        .sticky-col { 
+            position: sticky; 
+            left: 0; 
+            background: white; 
+            z-index: 35; 
+            border-right: 2px solid #e2e8f0; 
+            box-shadow: 4px 0 6px -2px rgba(0,0,0,0.05);
+        }
+        
+        .grid-cell { min-width: 50px; height: 50px; border-bottom: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; }
+        .bg-weekend { background-color: var(--weekend-yellow) !important; }
+        .bg-empty { background-color: #cbd5e1; opacity: 0.4; }
+        
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.15);
+        }
+        
+        .hour-btn {
+            width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 800; border-radius: 10px; cursor: pointer; transition: all 0.2s;
+        }
+        .hour-present { background: var(--primary-blue); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .hour-absent { background: white; color: #94a3b8; border: 1px solid #e2e8f0; }
+        .hour-disabled { background-color: #e2e8f0; color: #94a3b8; opacity: 0.3; cursor: not-allowed; }
+
+        .class-badge { font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; }
+        .bg-dpib1 { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .bg-dpib2 { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+        .bg-tkp1 { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .bg-tkp2 { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+        .custom-scroll::-webkit-scrollbar { height: 8px; width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        @media print {
+            #sidebar, #overlay, header, #filter-container, button { display: none !important; }
+            body { background: white !important; background-image: none !important; margin: 0; padding: 0; }
+            main { padding: 0 !important; margin: 0 !important; width: 100% !important; overflow: visible !important; }
+            #main-content { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
+            .glass-card { border: none !important; box-shadow: none !important; background: white !important; overflow: visible !important; border-radius: 0 !important; }
+            .sticky-col { position: static !important; box-shadow: none !important; border-right: 1px solid #000 !important; min-width: auto !important; width: auto !important; }
+            .report-table { font-size: 7.5pt !important; width: 100% !important; table-layout: auto !important; border: 0.5pt solid #000 !important; }
+            th, td { border: 0.5pt solid #000 !important; padding: 3px 2px !important; height: auto !important; word-wrap: break-word !important; }
+            .grid-cell { min-width: 0 !important; width: auto !important; height: auto !important; word-break: break-all !important; }
+            .bg-empty { background-color: #f1f5f9 !important; opacity: 1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .bg-weekend { background-color: #fffbeb !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .text-blue-600 { color: #2563eb !important; font-weight: bold !important; }
+            @page { size: landscape; margin: 0.8cm; }
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden"></div>
+
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-white shadow-2xl sidebar-closed flex flex-col border-r border-slate-200">
+        <div class="p-8 border-b border-slate-100">
+            <div class="flex flex-col items-center gap-4">
+                <img src="logosmk.png" alt="Logo SMK" class="w-20 h-20 object-contain drop-shadow-md" onerror="this.src='https://via.placeholder.com/80?text=Logo+SMK'">
+                <div class="text-center">
+                    <h2 class="font-extrabold text-slate-800 leading-tight">SMKN 2</h2>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1 text-center">Terbanggi Besar</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-6 space-y-2 flex-1">
+            <button onclick="window.location.href='index.html'" class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all text-left">
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-sm">HOME</span>
+            </button>
+            <button onclick="changeView('input')" id="nav-input" class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all bg-blue-600 text-white shadow-lg shadow-blue-200 text-left">
+                <i data-lucide="edit-3" class="w-5 h-5"></i>
+                <span class="text-sm">Form Absen</span>
+            </button>
+            <button onclick="changeView('harian')" id="nav-harian" class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all text-left">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+                <span class="text-sm">Rekap Harian</span>
+            </button>
+            <button onclick="changeView('mingguan')" id="nav-mingguan" class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all text-left">
+                <i data-lucide="columns-2" class="w-5 h-5"></i>
+                <span class="text-sm">Rekap Mingguan</span>
+            </button>
+            <button onclick="changeView('bulanan')" id="nav-bulanan" class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all text-left">
+                <i data-lucide="grid-3x3" class="w-5 h-5"></i>
+                <span class="text-sm">Rekap Bulanan</span>
+            </button>
+        </nav>
+
+        <div class="p-6">
+            <div class="bg-slate-900 rounded-2xl p-5 text-white shadow-xl">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400 text-center">Cloud Storage Aktif</p>
+                </div>
+                <p class="text-xs font-bold leading-tight text-center">Firebase Realtime Sync</p>
+            </div>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/50 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3 md:gap-5">
+                <button onclick="toggleSidebar()" class="p-3 hover:bg-white rounded-2xl shadow-sm border border-slate-100 transition-all active:scale-95">
+                    <i data-lucide="menu" class="w-6 h-6 text-slate-600"></i>
+                </button>
+                <div>
+                    <h1 id="view-title" class="text-[10px] md:text-xs font-black text-slate-800 uppercase tracking-widest">Dashboard Absensi</h1>
+                    <p id="view-subtitle" class="text-[8px] md:text-[10px] text-slate-400 font-bold uppercase mt-0.5 tracking-widest">Mengsinkronkan...</p>
+                </div>
+            </div>
+            <div id="filter-container" class="flex items-center gap-2"></div>
+        </header>
+
+        <main class="p-4 md:p-8 w-full flex-1 overflow-y-auto custom-scroll">
+            <div id="main-content" class="w-full max-w-[1600px] mx-auto"></div>
+        </main>
+    </div>
+
+    <div id="note-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2.5rem] p-8 md:p-10 max-w-lg w-full shadow-2xl scale-95 transition-all">
+            <h3 class="text-2xl font-black text-slate-800 mb-2 text-left">Detail Acara Khusus</h3>
+            <p class="text-[10px] text-slate-400 font-bold uppercase mb-6 tracking-widest text-left">Input jenis kegiatan (Dinas/Workshop/Libur).</p>
+            <textarea id="note-text" class="w-full h-40 bg-slate-50 border-2 border-slate-100 rounded-3xl p-6 text-sm font-bold focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all mb-8" placeholder="Contoh: DINAS LUAR PROVINSI"></textarea>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <button onclick="closeNoteModal()" class="py-4 font-bold text-slate-500 hover:bg-slate-100 rounded-2xl transition-all">Batal</button>
+                <button onclick="saveNote()" class="py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-200 active:scale-95 transition-all">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEMANGGIL DATA MASTER JADWAL -->
+    <script src="jadwalmengajar.js"></script>
+
+    <script>
+        // MASTER DATA LOOKUP
+        const CLASS_COLORS = { "X DPIB 1": "bg-dpib1", "X DPIB 2": "bg-dpib1", "XI DPIB 1": "bg-dpib2", "XI DPIB 2": "bg-dpib2", "XII DPIB 1": "bg-dpib1", "XII DPIB 2": "bg-dpib1", "X TKP 1": "bg-tkp1", "XI TKP 1": "bg-tkp1", "XII TKP 1": "bg-tkp1", "XII TKP 2": "bg-tkp2" };
+        const DAYS_ID = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        const MONTHS_ID = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        const PROCESSED_TEACHERS = TEACHERS.map(t => {
+            const daily = {};
+            const dayClasses = {};
+            ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"].forEach(d => {
+                const slots = t.schedule[d] || [];
+                let h = 0; let classes = [];
+                slots.forEach(slot => { h += (slot.hours[1] - slot.hours[0]) + 1; classes.push(slot.class); });
+                daily[d] = h; dayClasses[d] = [...new Set(classes)].join(", ");
+            });
+            return { ...t, dailyHours: daily, dayClasses };
+        }).sort((a, b) => a.name.localeCompare(b.name));
+
+        // State
+        const now = new Date();
+        let db = JSON.parse(localStorage.getItem('smkn2_abs_final')) || {};
+        let currentView = 'input';
+        let filterDate = now.toISOString().split('T')[0];
+        let filterMonth = now.getMonth(); 
+        let filterYear = now.getFullYear();
+        let filterWeek = Math.ceil(now.getDate() / 7);
+        let activeKey = null;
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDHwbFq1rFoSImy3I8g3O820vV_sPdEHE",
+            authDomain: "dpib-system-v2.firebaseapp.com",
+            projectId: "dpib-system-v2",
+            storageBucket: "dpib-system-v2.firebasestorage.app",
+            messagingSenderId: "444034231596",
+            appId: "1:444034231596:web:087a500225bffabe7d5089"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const firestore = firebase.firestore();
+        const appId = 'dpib-system-v2';
+
+        // Firebase Sync Logic
+        async function initFirebaseSync() {
+            try {
+                await auth.signInAnonymously();
+                const colRef = firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('attendance');
+                
+                colRef.onSnapshot((snapshot) => {
+                    snapshot.forEach(doc => {
+                        db[doc.id] = doc.data();
+                    });
+                    localStorage.setItem('smkn2_abs_final', JSON.stringify(db));
+                    renderContent();
+                }, (error) => console.error("Sync Error:", error));
+            } catch (err) {
+                console.error("Auth Error:", err);
+            }
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('overlay').classList.toggle('hidden'); }
+
+        function saveToLocal() { 
+            localStorage.setItem('smkn2_abs_final', JSON.stringify(db)); 
+            if (filterDate && db[filterDate]) {
+                firestore.collection('artifacts').doc(appId).collection('public').doc('data').collection('attendance')
+                    .doc(filterDate).set(db[filterDate]).catch(e => console.error("Write Error:", e));
+            }
+        }
+
+        function getMandatoryDay(t, date) { return t.dailyHours[DAYS_ID[date.getDay()]] || 0; }
+        function getEntry(name, dateStr) { return db[dateStr] && db[dateStr][name] ? db[dateStr][name] : { hours: [], status: "Tanpa Keterangan", note: "" }; }
+        function printReport() { window.print(); }
+
+        function changeView(view, pushState = true) {
+            currentView = view;
+            const navs = ['input', 'harian', 'mingguan', 'bulanan'];
+            navs.forEach(v => {
+                const el = document.getElementById(`nav-${v}`);
+                if (el) el.className = v === view ? "w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all bg-blue-600 text-white shadow-lg shadow-blue-200 text-left" : "w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all text-left";
+            });
+            renderFilters(); renderContent();
+            if (pushState) history.pushState({view: view}, '', '#' + view);
+            if(window.innerWidth < 1024) { const sidebar = document.getElementById('sidebar'); if(!sidebar.classList.contains('sidebar-closed')) toggleSidebar(); }
+        }
+
+        // History API Integration
+        window.onpopstate = function(event) {
+            if (event.state && event.state.view) {
+                changeView(event.state.view, false);
+            }
+        };
+
+        // Backspace Integration
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace') {
+                const target = e.target.tagName.toLowerCase();
+                if (target !== 'input' && target !== 'textarea') {
+                    e.preventDefault();
+                    history.back();
+                }
+            }
+        });
+
+        function renderFilters() {
+            const area = document.getElementById('filter-container');
+            const titleEl = document.getElementById('view-title');
+            titleEl.innerText = { 'input': 'Dashboard Input Absensi', 'harian': 'Rekap Kehadiran Harian', 'mingguan': 'Rekapitulasi Mingguan', 'bulanan': 'Rekapitulasi Bulanan' }[currentView];
+
+            let html = '';
+            if (currentView === 'input' || currentView === 'harian') html += `<input type="date" value="${filterDate}" onchange="filterDate=this.value; renderContent()" class="bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm outline-none">`;
+            else if (currentView === 'mingguan') html += `<select onchange="filterWeek=parseInt(this.value); renderContent()" class="bg-white border border-slate-200 rounded-2xl px-3 py-2.5 text-xs font-bold text-slate-700 shadow-sm">${[1,2,3,4,5].map(w => `<option value="${w}" ${filterWeek === w ? 'selected' : ''}>Minggu ${w}</option>`).join('')}</select><select onchange="filterMonth=parseInt(this.value); renderContent()" class="bg-white border border-slate-200 rounded-2xl px-3 py-2.5 text-xs font-bold text-slate-700 shadow-sm">${MONTHS_ID.map((m, i) => `<option value="${i}" ${filterMonth === i ? 'selected' : ''}>${m}</option>`).join('')}</select>`;
+            else html += `<select onchange="filterMonth=parseInt(this.value); renderContent()" class="bg-white border border-slate-200 rounded-2xl px-3 py-2.5 text-xs font-bold text-slate-700 shadow-sm">${MONTHS_ID.map((m, i) => `<option value="${i}" ${filterMonth === i ? 'selected' : ''}>${m}</option>`).join('')}</select><select onchange="filterYear=parseInt(this.value); renderContent()" class="bg-white border border-slate-200 rounded-2xl px-3 py-2.5 text-xs font-bold text-slate-700 shadow-sm">${[2025, 2026, 2027].map(y => `<option value="${y}" ${filterYear === y ? 'selected' : ''}>${y}</option>`).join('')}</select>`;
+            if (currentView !== 'input') html += `<button onclick="printReport()" class="flex items-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-2xl text-xs font-bold shadow-lg hover:bg-slate-700 active:scale-95 transition-all"><i data-lucide="printer" class="w-4 h-4"></i><span>Cetak PDF</span></button>`;
+            area.innerHTML = html; lucide.createIcons();
+        }
+
+        function renderContent() {
+            const area = document.getElementById('main-content'); area.innerHTML = '';
+            const date = new Date(filterDate); document.getElementById('view-subtitle').innerText = `${DAYS_ID[date.getDay()]}, ${date.getDate()} ${MONTHS_ID[date.getMonth()]} ${date.getFullYear()}`;
+            if (currentView === 'input') renderInputView(); else renderGridReport();
+            lucide.createIcons();
+        }
+
+        function renderInputView() {
+            const date = new Date(filterDate); const dayName = DAYS_ID[date.getDay()];
+            const list = PROCESSED_TEACHERS.filter(t => t.dailyHours[dayName] > 0);
+            const area = document.getElementById('main-content');
+            if (list.length === 0) { area.innerHTML = `<div class="glass-card border-2 border-dashed border-slate-200 rounded-[3rem] p-24 text-center"><i data-lucide="calendar-off" class="w-16 h-16 text-slate-300 mx-auto mb-6"></i><h3 class="text-xl font-black text-slate-800 uppercase tracking-widest">Tidak Ada Jadwal Mengajar</h3><p class="text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-tighter">Hari Libur Sekolah (${dayName})</p></div>`; return; }
+            let html = `<div class="grid gap-6">`;
+            list.forEach(t => {
+                const data = getEntry(t.name, filterDate); const sched = t.schedule[dayName];
+                const totalMandatory = t.dailyHours[dayName]; const percent = Math.round((data.hours.length / totalMandatory) * 100) || 0;
+                html += `<div class="glass-card p-8 rounded-[2.5rem] flex flex-col lg:flex-row gap-8 hover:shadow-xl transition-all"><div class="lg:w-80"><h4 class="text-base font-black text-slate-800 leading-tight mb-2 text-left">${t.name}</h4><div class="flex flex-wrap gap-2 mb-4">${t.dayClasses[dayName].split(", ").map(c => `<span class="class-badge ${CLASS_COLORS[c] || 'bg-slate-100'}">${c}</span>`).join("")}</div><p class="text-[9px] text-slate-400 font-bold uppercase mb-4 tracking-widest text-left">Jam Wajib: ${totalMandatory} Jam</p><select onchange="updateFullStatus('${t.name}', this.value)" class="w-full bg-slate-100 border-none rounded-2xl px-5 py-4 text-xs font-bold text-slate-700 outline-none">${['Tanpa Keterangan', 'Hadir Penuh', 'Acara Khusus', 'Sakit', 'Ijin'].map(o => `<option ${data.status === o ? 'selected' : ''}>${o}</option>`).join('')}</select></div><div class="flex-1"><p class="text-[10px] font-black text-slate-300 uppercase mb-4 tracking-widest text-left">Log Kehadiran (1-12)</p><div class="flex flex-wrap gap-2">${Array.from({length: 12}, (_, i) => i + 1).map(h => { let slot = sched.find(s => h >= s.hours[0] && h <= s.hours[1]); if (!slot) return `<div class="hour-btn hour-disabled">${h}</div>`; return `<div onclick="toggleHour('${t.name}', ${h})" class="hour-btn ${data.hours.includes(h) ? 'hour-present' : 'hour-absent'}">${h}</div>`; }).join('')}</div>${data.note ? `<div class="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-2xl text-[11px] text-blue-700 font-bold">Keterangan: ${data.note}</div>` : ''}</div><div class="lg:w-28 flex flex-col items-center justify-center border-l-2 border-slate-50 pl-8"><h5 class="text-4xl font-black ${percent < 100 ? 'text-amber-500' : 'text-emerald-500'}">${percent}%</h5><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Capaian</p></div></div>`;
+            });
+            area.innerHTML = html + `</div>`;
+        }
+
+        function renderGridReport() {
+            let dates = [];
+            if (currentView === 'harian') dates = Array.from({length: 12}, (_, i) => i + 1);
+            else if (currentView === 'mingguan') {
+                const firstDayOfMonth = new Date(filterYear, filterMonth, 1);
+                const dayOffset = firstDayOfMonth.getDay(); // 0-6 (Sun-Sat)
+                const startOfFirstWeek = 1 - (dayOffset === 0 ? 6 : dayOffset - 1); 
+                const startDay = startOfFirstWeek + (filterWeek - 1) * 7;
+                
+                for(let i=0; i<7; i++) { 
+                    const d = new Date(filterYear, filterMonth, startDay + i); 
+                    if (d.getMonth() === filterMonth) {
+                        dates.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`); 
+                    }
+                }
+            } else {
+                const total = new Date(filterYear, filterMonth + 1, 0).getDate();
+                for(let i=1; i<=total; i++) { const d = new Date(filterYear, filterMonth, i); dates.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`); }
+            }
+            const rows = PROCESSED_TEACHERS.map(t => {
+                let w = 0, hCount = 0, sCount = 0, iCount = 0, tkCount = 0;
+                const dObjGlobal = new Date(filterDate); const dayName = DAYS_ID[dObjGlobal.getDay()];
+                if (currentView === 'bulanan') { for(let d=1; d<=new Date(filterYear, filterMonth + 1, 0).getDate(); d++) w += getMandatoryDay(t, new Date(filterYear, filterMonth, d)); }
+                const results = dates.map(d => {
+                    if (currentView === 'harian') { const state = getEntry(t.name, filterDate); const slot = t.schedule[dayName]?.find(sl => d >= sl.hours[0] && d <= sl.hours[1]); w = t.dailyHours[dayName]; hCount = state.hours.length; return { hour: d, mandatory: slot ? 1 : 0, present: state.hours.includes(d), status: state.status, note: state.note, class: slot ? slot.class : '' }; }
+                    else { const state = getEntry(t.name, d); const dObj = new Date(d); const mand = getMandatoryDay(t, dObj); if(currentView !== 'bulanan') w += mand; hCount += state.hours.length; if(state.status === 'Sakit') sCount++; else if(state.status === 'Ijin') iCount++; else if(state.status === 'Tanpa Keterangan') tkCount++; return { present: state.hours.length, mandatory: mand, status: state.status, note: state.note, isWeekend: dObj.getDay() === 0 || dObj.getDay() === 6 }; }
+                });
+                return { ...t, wajibTotal: w, hadirTotal: hCount, s: sCount, iCount, tk: tkCount, results };
+            });
+            let html = `<div class="glass-card rounded-[2rem] overflow-hidden border border-slate-200" id="printable-area"><div class="overflow-x-auto custom-scroll"><table class="report-table"><thead><tr class="bg-slate-50/50"><th rowspan="2" class="sticky-col p-6 text-[10px] font-black text-slate-400 uppercase border-b-2 border-slate-200 w-64 text-left">Nama Guru</th>${dates.map(d => `<th class="text-center p-2 text-[9px] font-black border-l border-slate-100 ${currentView==='harian'?'text-slate-400':(new Date(d).getDay()==0||new Date(d).getDay()==6?'bg-weekend text-amber-600':'text-slate-400')}">${currentView==='harian'?'Jam':DAYS_ID[new Date(d).getDay()].substring(0,3)}</th>`).join('')}<th colspan="5" class="text-center p-4 text-[10px] font-black border-l-4 border-slate-200 border-b-2 border-slate-200 uppercase bg-slate-50">Kalkulasi</th></tr><tr class="bg-slate-50/50">${dates.map(d => `<th class="text-center p-2 text-[10px] font-black border-l border-slate-100 border-b-2 border-slate-200 ${currentView==='harian'?'text-slate-400':(new Date(d).getDay()==0||new Date(d).getDay()==6?'bg-weekend text-amber-600':'text-slate-400')}">${currentView==='harian'?d:new Date(d).getDate()}</th>`).join('')}<th class="text-center p-3 text-[9px] font-black border-l-4 border-slate-200 bg-slate-50">Wajib</th><th class="text-center p-3 text-[9px] font-black border-l text-emerald-600">Hadir</th><th class="text-center p-3 text-[9px] font-black border-l text-red-500">Absen</th><th class="text-center p-3 text-[9px] font-black border-l text-slate-400">S/I/TK</th><th class="text-center p-3 text-[10px] font-black border-l text-blue-700 bg-blue-50/50">%</th></tr></thead><tbody>`;
+            rows.forEach(t => {
+                const pct = t.wajibTotal > 0 ? Math.round((t.hadirTotal / t.wajibTotal) * 100) : 0;
+                html += `<tr class="hover:bg-blue-50/30 transition-colors"><td class="sticky-col p-5 border-b border-slate-100 text-left font-bold text-slate-700 text-xs">${t.name}</td>${t.results.map(r => { let c = '', cl = ''; if(currentView==='harian'){ cl = r.mandatory === 0 ? 'bg-empty' : ''; c = `<div class="flex flex-col items-center justify-center h-full py-1"><span class="text-[7px] font-bold text-slate-400 uppercase">${r.class || '-'}</span><span class="text-[12px] font-black text-blue-600">${r.present ? 'V' : ''}</span></div>`; } else { c = r.mandatory > 0 ? r.present : ''; cl = r.isWeekend ? 'bg-weekend' : (r.mandatory === 0 ? 'bg-empty' : ''); if (r.status === 'Acara Khusus' && r.note) c = `<div class="px-1 text-[7px] uppercase font-black break-words text-blue-600">${r.note}</div>`; else if (r.mandatory > 0) cl += r.present < r.mandatory ? ' text-amber-500 font-black' : ' text-slate-400 font-bold'; } return `<td class="grid-cell text-center border-b border-slate-100 ${cl}">${c}</td>`; }).join('')}<td class="text-center p-3 font-black border-l-4 border-slate-200 bg-slate-50/50 text-[10px] border-b">${t.wajibTotal}</td><td class="text-center p-3 font-black text-emerald-600 text-[10px] border-b">${t.hadirTotal}</td><td class="text-center p-3 font-black text-red-500 text-[10px] border-b">${Math.max(0, t.wajibTotal - t.hadirTotal)}</td><td class="text-center p-3 font-bold text-slate-400 text-[10px] border-b">${t.s}/${t.iCount}/${t.tk}</td><td class="text-center p-3 font-black text-blue-700 bg-blue-50 text-[11px] border-b">${pct}%</td></tr>`;
+            });
+            document.getElementById('main-content').innerHTML = html + `</tbody></table></div></div>`;
+        }
+
+        function toggleHour(name, hour) { if (!db[filterDate]) db[filterDate] = {}; if (!db[filterDate][name]) db[filterDate][name] = { hours: [], status: "Hadir Sebagian", note: "" }; const idx = db[filterDate][name].hours.indexOf(hour); if (idx > -1) db[filterDate][name].hours.splice(idx, 1); else db[filterDate][name].hours.push(hour); saveToLocal(); renderContent(); }
+        function updateFullStatus(name, status) { if (!db[filterDate]) db[filterDate] = {}; const t = PROCESSED_TEACHERS.find(m => m.name === name); const sched = t.schedule[DAYS_ID[new Date(filterDate).getDay()]]; if (['Hadir Penuh', 'Acara Khusus'].includes(status)) { const h = []; if(sched) sched.forEach(s => { for(let j=s.hours[0]; j<=s.hours[1]; j++) h.push(j); }); db[filterDate][name] = { hours: h, status, note: "" }; if (status === 'Acara Khusus') { activeKey = { date: filterDate, name }; document.getElementById('note-text').value = ""; document.getElementById('note-modal').classList.remove('hidden'); return; } } else { db[filterDate][name] = { hours: [], status, note: "" }; } saveToLocal(); renderContent(); }
+        function saveNote() { const val = document.getElementById('note-text').value; if (activeKey) { if(!db[activeKey.date][activeKey.name]) db[activeKey.date][activeKey.name] = { hours: [], status: "", note: "" }; db[activeKey.date][activeKey.name].note = val; db[activeKey.date][activeKey.name].status = "Acara Khusus"; } closeNoteModal(); saveToLocal(); renderContent(); }
+        function closeNoteModal() { document.getElementById('note-modal').classList.add('hidden'); }
+
+        // Start App
+        initFirebaseSync();
+        changeView('input', true);
+        lucide.createIcons();
+    </script>
+</body>
+</html>
