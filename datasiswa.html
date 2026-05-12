@@ -353,7 +353,7 @@
                 document.getElementById('printSubTitle').innerText = `KELAS: ${fTingkat} ${fJurusan.replace('-', ' ')} | TANGGAL: _________________`;
                 renderTable(currentFiltered, 'penilaian');
             } else {
-                document.getElementById('printTitleMain').innerText = "DAFTAR DATA SISWA DPIB";
+                document.getElementById('printTitleMain').innerText = "DAFTAR DATA SISWA";
                 document.getElementById('printSubTitle').innerText = `FILTER: ${fTingkat || 'SEMUA'} | ${fJurusan.replace('-', ' ') || 'SEMUA'}`;
                 renderTable(currentFiltered, 'default');
             }
