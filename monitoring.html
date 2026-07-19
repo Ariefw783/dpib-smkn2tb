@@ -514,12 +514,12 @@
                         return null;
                     };
 
-                    // Kotak Meja PC dengan Desain Responsif (Cerah & Kontras)
+                    // Kotak Meja PC dengan Desain Responsif (Cerah, Solid, & Kontras Tinggi)
                     const renderPC = (pcCode) => {
                         const activeData = findActivePC(pcCode);
                         if (activeData) {
                             return `
-                                <div class="w-16 sm:w-20 md:w-24 lg:w-28 h-24 sm:h-28 md:h-32 bg-emerald-50 border-2 border-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.15)] rounded-lg md:rounded-xl flex flex-col justify-between p-1.5 md:p-2.5 text-center transition-all duration-300">
+                                <div class="w-16 sm:w-20 md:w-24 lg:w-28 h-24 sm:h-28 md:h-32 bg-emerald-50 border-2 border-emerald-500 shadow-md rounded-lg md:rounded-xl flex flex-col justify-between p-1.5 md:p-2.5 text-center transition-all duration-300">
                                     <span class="text-[7px] sm:text-[8px] md:text-[10px] font-black text-emerald-600 font-mono tracking-wider">${pcCode}</span>
                                     <div class="flex flex-col items-center my-0.5">
                                         <i class="fa-solid fa-desktop text-xs sm:text-sm md:text-lg text-emerald-500 animate-pulse"></i>
@@ -533,14 +533,14 @@
                             `;
                         } else {
                             return `
-                                <div class="w-16 sm:w-20 md:w-24 lg:w-28 h-24 sm:h-28 md:h-32 bg-white/60 border border-slate-200 rounded-lg md:rounded-xl flex flex-col justify-between p-1.5 md:p-2.5 text-center transition-all duration-300 opacity-80 hover:opacity-100">
+                                <div class="w-16 sm:w-20 md:w-24 lg:w-28 h-24 sm:h-28 md:h-32 bg-white border border-slate-300 shadow-sm rounded-lg md:rounded-xl flex flex-col justify-between p-1.5 md:p-2.5 text-center transition-all duration-300 opacity-80 hover:opacity-100">
                                     <span class="text-[7px] sm:text-[8px] md:text-[10px] font-black text-slate-400 font-mono tracking-wider">${pcCode}</span>
                                     <div class="flex flex-col items-center my-0.5">
                                         <i class="fa-solid fa-desktop text-xs sm:text-sm md:text-lg text-slate-300"></i>
                                     </div>
                                     <div class="min-w-0">
                                         <h5 class="text-[6px] sm:text-[8px] md:text-[9px] font-black text-slate-400 uppercase">KOSONG</h5>
-                                        <p class="text-[5px] sm:text-[6px] md:text-[8px] font-bold text-slate-450 uppercase">-</p>
+                                        <p class="text-[5px] sm:text-[6px] md:text-[8px] font-bold text-slate-400 uppercase">-</p>
                                     </div>
                                     <span class="text-[5px] sm:text-[6px] md:text-[8px] font-mono font-bold text-slate-400 leading-none mt-0.5">--:--:--</span>
                                 </div>
@@ -565,7 +565,7 @@
                     teacherRow.className = "flex flex-col items-center gap-1 mb-1 md:mb-2";
                     teacherRow.innerHTML = `
                         <span class="text-[8px] md:text-[9px] font-black text-slate-800 uppercase tracking-[0.25em]">MEJA GURU / INSTRUKTUR</span>
-                        <div class="bg-white/60 border border-slate-200 rounded-2xl p-2.5 md:p-4 flex justify-center shadow-lg min-w-[120px] md:min-w-[150px]">
+                        <div class="bg-white/95 border-2 border-slate-300 rounded-2xl p-2.5 md:p-4 flex justify-center shadow-md min-w-[120px] md:min-w-[150px]">
                             ${renderPC("DPIB-GURU")}
                         </div>
                     `;
@@ -613,7 +613,7 @@
                         
                         row.tables.forEach((table, tIndex) => {
                             const tableEl = document.createElement('div');
-                            tableEl.className = "bg-white/40 border border-slate-200 rounded-xl md:rounded-2xl p-2 md:p-3.5 flex flex-col items-center gap-1.5 md:gap-2.5 flex-1 max-w-[340px]";
+                            tableEl.className = "bg-white/95 border-2 border-slate-300 shadow-md rounded-xl md:rounded-2xl p-2 md:p-3.5 flex flex-col items-center gap-1.5 md:gap-2.5 flex-1 max-w-[340px]";
                             tableEl.innerHTML = `
                                 <span class="text-[7px] md:text-[8px] font-bold text-slate-500 uppercase tracking-widest">Baris ${row.rowNum} - Meja ${tIndex + 1}</span>
                                 <div class="flex gap-1.5 md:gap-2.5 justify-center w-full">
@@ -748,7 +748,6 @@
                 } else {
                     // Aktifkan tombol list, matikan tombol meja
                     btnMeja.className = "text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1";
-                    btnList.className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1";
                     
                     // Munculkan kembali saringan tanggal/filter
                     filtersContainer.classList.remove('hidden');
