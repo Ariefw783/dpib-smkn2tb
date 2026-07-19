@@ -1,0 +1,22 @@
+{
+  "name": "DPIB Digital Hub",
+  "short_name": "DPIB Hub",
+  "description": "Sistem Informasi dan Dashboard Digital DPIB SMKN 2 Terbanggi Besar",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "dpib.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "dpib.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
