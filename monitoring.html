@@ -80,7 +80,7 @@
         @media print {
             @page { size: A4; margin: 1.5cm; }
             body { background: white !important; overflow: visible !important; height: auto !important; color: black !important; }
-            header, footer, .no-print, button, #system-log-container, .main-filters { display: none !important; }
+            header, footer, .no-print, button, #system-log-container, .main-filters, #mode-selector-container { display: none !important; }
             #recent-list { width: 100% !important; overflow: visible !important; }
             .data-item { page-break-inside: avoid; border-bottom: 1px solid #ddd !important; background: white !important; }
             .data-item div { color: black !important; border-color: #eee !important; }
@@ -152,9 +152,19 @@
                         </p>
                     </div>
                     
-                    <div class="flex items-center gap-4">
-                        <!-- Main UI Filter -->
-                        <div class="flex items-center gap-2 main-filters">
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <!-- Mode Selector (Meja vs List) -->
+                        <div id="mode-selector-container" class="flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
+                            <button id="btn-mode-meja" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-table-cells-large"></i> Meja
+                            </button>
+                            <button id="btn-mode-list" class="text-gray-400 hover:text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-list"></i> List
+                            </button>
+                        </div>
+
+                        <!-- Main UI Filter (Tampil/Sembunyi otomatis tergantung mode) -->
+                        <div class="flex items-center gap-2 main-filters" id="main-filters-container">
                              <select id="main-data-filter" class="bg-white/5 border border-white/10 text-white px-3 py-2 rounded-lg font-bold text-[10px] uppercase tracking-widest outline-none">
                                 <option value="today">Hari Ini</option>
                                 <option value="all">Semua Data</option>
@@ -283,6 +293,9 @@
         let logQueue = [];
         let isTyping = false;
         let currentUnsubscribe = null;
+        
+        // Simpan status mode tampilan (default: Meja)
+        window.currentViewMode = 'meja';
 
         const formatWIB = (dataDoc) => {
             let date;
@@ -400,11 +413,17 @@
 
         // KOREKSI: Fungsi Cetak Baru (Tanpa Password & Mengikuti Filter Aktif)
         window.openExportMenu = () => {
-            const filterType = document.getElementById('main-data-filter').value;
             const count = document.getElementById('today-count').innerText;
-            const dateVal = document.getElementById('main-date-picker').value;
+            let filterText = "";
             
-            let filterText = filterType === 'today' ? "HARI INI" : (filterType === 'all' ? "SEMUA RIWAYAT" : `TANGGAL: ${dateVal}`);
+            if (window.currentViewMode === 'meja') {
+                filterText = "LIVE (DENAH MEJA)";
+            } else {
+                const filterType = document.getElementById('main-data-filter').value;
+                const dateVal = document.getElementById('main-date-picker').value;
+                filterText = filterType === 'today' ? "HARI INI" : (filterType === 'all' ? "SEMUA RIWAYAT" : `TANGGAL: ${dateVal}`);
+            }
+            
             document.getElementById('print-filter-info').innerText = `FILTER: ${filterText} | TOTAL: ${count} UNIT PC TERDETEKSI`;
             
             window.pushLog("PRINT_MODE_ACTIVE");
@@ -439,32 +458,220 @@
                 uniquePCData.sort((a, b) => a.Nomor_Komputer.localeCompare(b.Nomor_Komputer, undefined, {numeric: true}));
 
                 document.getElementById('today-count').innerText = uniquePCData.length;
-                
-                if(uniquePCData.length === 0) {
-                    list.innerHTML = `<div class="p-20 text-center text-[10px] font-black text-gray-600 uppercase tracking-widest">Belum ada aktivitas di periode ini.</div>`;
-                    return;
+
+                // --- PILIHAN RENDERING BERDASARKAN MODE AKTIF ---
+                if (window.currentViewMode === 'meja') {
+                    // ==========================================
+                    //  MODE MEJA (RESPONSIF & LIVE SEATING CHART)
+                    // ==========================================
+                    
+                    const activePCs = {};
+                    uniquePCData.forEach(item => {
+                        if (item.Nomor_Komputer) {
+                            const key = item.Nomor_Komputer.toUpperCase().trim();
+                            activePCs[key] = item;
+                        }
+                    });
+
+                    // Fungsi pencocokan cerdas database
+                    const findActivePC = (pcCode) => {
+                        const cleanLayout = pcCode.toUpperCase().replace(/\s+/g, '').replace('DPIB-', '');
+                        if (cleanLayout.includes("GURU")) {
+                            for (const key in activePCs) {
+                                if (key.includes("GURU")) return activePCs[key];
+                            }
+                        }
+                        for (const key in activePCs) {
+                            const cleanDB = key.replace(/\s+/g, '').replace('DPIB-', '');
+                            if (cleanLayout === cleanDB || pcCode.toUpperCase() === key) {
+                                return activePCs[key];
+                            }
+                        }
+                        return null;
+                    };
+
+                    // Kotak Meja PC dengan Desain Responsif (Sangat Kompak di HP, Elegan di PC)
+                    const renderPC = (pcCode) => {
+                        const activeData = findActivePC(pcCode);
+                        if (activeData) {
+                            return `
+                                <div class="w-16 sm:w-20 md:w-24 lg:w-28 h-24 sm:h-28 md:h-32 bg-emerald-950/30 border-2 border-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.25)] rounded-lg md:rounded-xl flex flex-col justify-between p-1.5 md:p-2.5 text-center transition-all duration-300">
+                                    <span class="text-[7px] sm:text-[8px] md:text-[10px] font-black text-emerald-400 font-mono tracking-wider">${pcCode}</span>
+                                    <div class="flex flex-col items-center my-0.5">
+                                        <i class="fa-solid fa-desktop text-xs sm:text-sm md:text-lg text-emerald-400 animate-pulse"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h5 class="text-[7px] sm:text-[8px] md:text-[10px] font-black text-white uppercase truncate" title="${activeData.Nama}">${activeData.Nama}</h5>
+                                        <p class="text-[5px] sm:text-[6px] md:text-[8px] font-bold text-gray-400 uppercase truncate">${activeData.Kelas} ${activeData.Jurusan}</p>
+                                    </div>
+                                    <span class="text-[5px] sm:text-[6px] md:text-[8px] font-mono font-bold text-accent-yellow leading-none mt-0.5">${formatWIB(activeData)}</span>
+                                </div>
+                            `;
+                        } else {
+                            return `
+                                <div class="w-16 sm:w-20 md:w-24 lg:w-28 h-24 sm:h-28 md:h-32 bg-slate-950/40 border border-white/5 rounded-lg md:rounded-xl flex flex-col justify-between p-1.5 md:p-2.5 text-center transition-all duration-300 opacity-40 hover:opacity-60">
+                                    <span class="text-[7px] sm:text-[8px] md:text-[10px] font-black text-gray-500 font-mono tracking-wider">${pcCode}</span>
+                                    <div class="flex flex-col items-center my-0.5">
+                                        <i class="fa-solid fa-desktop text-xs sm:text-sm md:text-lg text-gray-700"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h5 class="text-[6px] sm:text-[8px] md:text-[9px] font-black text-gray-600 uppercase">KOSONG</h5>
+                                        <p class="text-[5px] sm:text-[6px] md:text-[8px] font-bold text-gray-800 uppercase">-</p>
+                                    </div>
+                                    <span class="text-[5px] sm:text-[6px] md:text-[8px] font-mono font-bold text-gray-800 leading-none mt-0.5">--:--:--</span>
+                                </div>
+                            `;
+                        }
+                    };
+
+                    const mapWrapper = document.createElement('div');
+                    mapWrapper.className = "overflow-x-auto w-full p-4 no-print custom-scroll";
+                    
+                    const mapInner = document.createElement('div');
+                    mapInner.className = "min-w-[620px] md:min-w-[850px] flex flex-col gap-6 md:gap-8 items-center py-4";
+
+                    // Petunjuk geser khusus ponsel agar pengguna awam tidak bingung
+                    const swipeTip = document.createElement('div');
+                    swipeTip.className = "block md:hidden text-center text-[8px] font-bold text-blue-400 uppercase tracking-widest mb-1 animate-pulse";
+                    swipeTip.innerHTML = `<i class="fa-solid fa-arrows-left-right"></i> Geser layar untuk melihat seluruh denah`;
+                    mapWrapper.appendChild(swipeTip);
+
+                    // 1. Baris Guru
+                    const teacherRow = document.createElement('div');
+                    teacherRow.className = "flex flex-col items-center gap-1 mb-1 md:mb-2";
+                    teacherRow.innerHTML = `
+                        <span class="text-[8px] md:text-[9px] font-black text-accent-yellow uppercase tracking-[0.25em]">MEJA GURU / INSTRUKTUR</span>
+                        <div class="bg-yellow-500/5 border border-yellow-500/10 rounded-2xl p-2.5 md:p-4 flex justify-center shadow-lg min-w-[120px] md:min-w-[150px]">
+                            ${renderPC("DPIB-GURU")}
+                        </div>
+                    `;
+                    mapInner.appendChild(teacherRow);
+
+                    // 2. Baris Siswa (Pola S)
+                    const layout = [
+                        {
+                            rowNum: 1,
+                            tables: [
+                                { pcs: ["DPIB-A1", "DPIB-A2"] },
+                                { pcs: ["DPIB-A3", "DPIB-A4"] },
+                                { pcs: ["DPIB-A5", "DPIB-A6"] }
+                            ]
+                        },
+                        {
+                            rowNum: 2,
+                            tables: [
+                                { pcs: ["DPIB-A12", "DPIB-A11"] },
+                                { pcs: ["DPIB-A10", "DPIB-A9"] },
+                                { pcs: ["DPIB-A8", "DPIB-A7"] }
+                            ]
+                        },
+                        {
+                            rowNum: 3,
+                            tables: [
+                                { pcs: ["DPIB-A13", "DPIB-A14", "DPIB-A15"] },
+                                { pcs: ["DPIB-A16", "DPIB-A17"] },
+                                { pcs: ["DPIB-A18", "DPIB-A19", "DPIB-A20"] }
+                            ]
+                        },
+                        {
+                            rowNum: 4,
+                            tables: [
+                                { pcs: ["DPIB-A26", "DPIB-A25"] },
+                                { pcs: ["DPIB-A24", "DPIB-A23"] },
+                                { pcs: ["DPIB-A22", "DPIB-A21"] }
+                            ]
+                        }
+                    ];
+
+                    layout.forEach(row => {
+                        const rowEl = document.createElement('div');
+                        rowEl.className = "flex flex-row justify-center gap-4 md:gap-10 w-full max-w-5xl";
+                        
+                        row.tables.forEach((table, tIndex) => {
+                            const tableEl = document.createElement('div');
+                            tableEl.className = "bg-slate-900/30 border border-white/5 rounded-xl md:rounded-2xl p-2 md:p-3.5 flex flex-col items-center gap-1.5 md:gap-2.5 flex-1 max-w-[340px]";
+                            tableEl.innerHTML = `
+                                <span class="text-[7px] md:text-[8px] font-bold text-gray-500 uppercase tracking-widest">Baris ${row.rowNum} - Meja ${tIndex + 1}</span>
+                                <div class="flex gap-1.5 md:gap-2.5 justify-center w-full">
+                                    ${table.pcs.map(pc => renderPC(pc)).join('')}
+                                </div>
+                            `;
+                            rowEl.appendChild(tableEl);
+                        });
+                        
+                        mapInner.appendChild(rowEl);
+                    });
+
+                    mapWrapper.appendChild(mapInner);
+                    list.appendChild(mapWrapper);
+
+                } else {
+                    // ==========================================
+                    //  MODE LIST (SISTEM LIST LAMA HISTORIS)
+                    // ==========================================
+                    
+                    if(uniquePCData.length === 0) {
+                        list.innerHTML = `<div class="p-20 text-center text-[10px] font-black text-gray-600 uppercase tracking-widest no-print">Belum ada aktivitas di periode ini.</div>`;
+                    } else {
+                        uniquePCData.forEach(d => {
+                            const div = document.createElement('div');
+                            div.className = "data-item grid grid-cols-[80px_1fr_110px] md:grid-cols-[100px_1fr_140px] items-center p-4 md:px-8 gap-4 md:gap-6 no-print";
+                            div.innerHTML = `
+                                <div class="w-full h-12 md:h-14 bg-white/5 text-white rounded-2xl flex items-center justify-center font-black border border-white/10 flex-shrink-0 text-[10px] md:text-xs tracking-tighter text-center">
+                                    PC ${d.Nomor_Komputer}
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="text-[12px] md:text-[13px] font-black text-white uppercase truncate">${d.Nama}</h4>
+                                    <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-widest truncate mt-1">
+                                        ${d.Kelas} ${d.Jurusan} • <span class="text-blue-500">${d.Nama_Guru_Petugas}</span>
+                                    </div>
+                                </div>
+                                <div class="text-right border-l border-white/5 pl-4">
+                                    <span class="block text-[14px] md:text-[16px] font-black text-white log-font leading-none">${formatWIB(d)}</span>
+                                    <span class="text-[8px] font-black text-accent-yellow uppercase tracking-tighter mt-1 block">Live Recorded</span>
+                                </div>`;
+                            list.appendChild(div);
+                        });
+                    }
                 }
 
-                uniquePCData.forEach(d => {
-                    const div = document.createElement('div');
-                    div.className = "data-item grid grid-cols-[80px_1fr_110px] md:grid-cols-[100px_1fr_140px] items-center p-4 md:px-8 gap-4 md:gap-6";
-                    div.innerHTML = `
-                        <div class="w-full h-12 md:h-14 bg-white/5 text-white rounded-2xl flex items-center justify-center font-black border border-white/10 flex-shrink-0 text-[10px] md:text-xs tracking-tighter">
-                            PC ${d.Nomor_Komputer}
-                        </div>
-                        <div class="min-w-0">
-                            <h4 class="text-[12px] md:text-[13px] font-black text-white uppercase truncate">${d.Nama}</h4>
-                            <div class="text-[9px] md:text-[10px] font-bold text-gray-500 uppercase tracking-widest truncate mt-1">
-                                ${d.Kelas} ${d.Jurusan} • <span class="text-blue-500">${d.Nama_Guru_Petugas}</span>
-                            </div>
-                        </div>
-                        <div class="text-right border-l border-white/5 pl-4">
-                            <span class="block text-[14px] md:text-[16px] font-black text-white log-font leading-none">${formatWIB(d)}</span>
-                            <span class="text-[8px] font-black text-accent-yellow uppercase tracking-tighter mt-1 block">Live Recorded</span>
-                        </div>`;
-                    list.appendChild(div);
-                });
+                // --- SYSTEM CETAK KERTAS (SELALU AKTIF DI KEDUA MODE) ---
+                const printContainer = document.createElement('div');
+                printContainer.className = "print-only w-full mt-4";
                 
+                if (uniquePCData.length === 0) {
+                    printContainer.innerHTML = `<div class="text-center text-sm py-8 font-bold uppercase text-black">Tidak ada aktivitas PC aktif.</div>`;
+                } else {
+                    let tableHTML = `
+                        <table class="w-full border-collapse border border-slate-300 text-[11px] text-left">
+                            <thead>
+                                <tr class="bg-slate-100 text-black font-black uppercase border-b border-slate-300">
+                                    <th class="p-2.5 border border-slate-300">NOMOR PC</th>
+                                    <th class="p-2.5 border border-slate-300">NAMA LENGKAP</th>
+                                    <th class="p-2.5 border border-slate-300">KELAS & JURUSAN</th>
+                                    <th class="p-2.5 border border-slate-300">GURU PENGAJAR</th>
+                                    <th class="p-2.5 border border-slate-300 font-mono">WAKTU MASUK</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    uniquePCData.forEach(d => {
+                        tableHTML += `
+                            <tr class="border-b border-slate-300 text-black">
+                                <td class="p-2.5 border border-slate-300 font-bold">PC ${d.Nomor_Komputer}</td>
+                                <td class="p-2.5 border border-slate-300 font-bold uppercase">${d.Nama}</td>
+                                <td class="p-2.5 border border-slate-300 uppercase">${d.Kelas} ${d.Jurusan}</td>
+                                <td class="p-2.5 border border-slate-300 uppercase">${d.Nama_Guru_Petugas || "-"}</td>
+                                <td class="p-2.5 border border-slate-300 font-mono">${formatWIB(d)}</td>
+                            </tr>
+                        `;
+                    });
+                    tableHTML += `</tbody></table>`;
+                    printContainer.innerHTML = tableHTML;
+                }
+                list.appendChild(printContainer);
+
                 window.pushLog(`SYNC: ${uniquePCData.length} records active.`);
             }, (error) => { window.pushLog(`ERR: ${error.message}`); });
         };
@@ -498,7 +705,53 @@
                 loadData('pick', e.target.value);
             };
 
-            loadData('today');
+            // --- LOGIKA PENGENDALI MODE PEMILIHAN (SWITCH BUTTON) ---
+            const btnMeja = document.getElementById('btn-mode-meja');
+            const btnList = document.getElementById('btn-mode-list');
+            const filtersContainer = document.getElementById('main-filters-container');
+
+            const applyModeUI = () => {
+                if (window.currentViewMode === 'meja') {
+                    // Aktifkan tombol meja, matikan tombol list
+                    btnMeja.className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1";
+                    btnList.className = "text-gray-400 hover:text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1";
+                    
+                    // Sembunyikan saringan tanggal/filter
+                    filtersContainer.classList.add('hidden');
+                    
+                    // Mode meja selalu dipaksa memuat data live (hari ini)
+                    loadData('today');
+                } else {
+                    // Aktifkan tombol list, matikan tombol meja
+                    btnMeja.className = "text-gray-400 hover:text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1";
+                    btnList.className = "bg-blue-600 text-white px-3 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-1";
+                    
+                    // Munculkan kembali saringan tanggal/filter
+                    filtersContainer.classList.remove('hidden');
+                    
+                    // Ambil data berdasarkan pilihan saringan saat ini
+                    if (filterSelect.value === 'pick') {
+                        loadData('pick', datePicker.value);
+                    } else {
+                        loadData(filterSelect.value);
+                    }
+                }
+            };
+
+            btnMeja.onclick = () => {
+                window.currentViewMode = 'meja';
+                window.pushLog("VIEW_MODE: MEJA (LIVE)");
+                applyModeUI();
+            };
+
+            btnList.onclick = () => {
+                window.currentViewMode = 'list';
+                window.pushLog("VIEW_MODE: LIST (HISTORIS)");
+                applyModeUI();
+            };
+
+            // Jalankan mode awal (Meja)
+            applyModeUI();
         };
 
         startApp();
