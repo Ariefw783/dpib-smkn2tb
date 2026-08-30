@@ -473,7 +473,8 @@
         };
 
         window.openExportMenu = () => {
-            const count = document.getElementById('today-count').innerText;
+            const pcCount = document.getElementById('today-count').innerText;
+            const sessionCount = document.getElementById('recent-list').dataset.sessionCount || '0';
             let filterText = "";
             
             if (window.currentViewMode === 'meja') {
@@ -484,7 +485,7 @@
                 filterText = filterType === 'today' ? "HARI INI" : (filterType === 'all' ? "SEMUA RIWAYAT" : `TANGGAL: ${dateVal}`);
             }
             
-            document.getElementById('print-filter-info').innerText = `FILTER: ${filterText} | TOTAL: ${count} UNIT PC TERDETEKSI`;
+            document.getElementById('print-filter-info').innerText = `FILTER: ${filterText} | ${sessionCount} CATATAN LOGIN | ${pcCount} UNIT PC TERDETEKSI`;
             
             window.pushLog("PRINT_MODE_ACTIVE");
             window.print();
@@ -498,8 +499,6 @@
 
             let q;
             if (filterType === 'today') {
-                const nowJKT = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-                nowJKT.setHours(0,0,0,0);
                 const { start, end } = getWibDayRange(getWibDateKey());
                 q = query(collection(db, "log_akses_lab"), where("Waktu_Masuk", ">=", start), where("Waktu_Masuk", "<", end), orderBy("Waktu_Masuk", "desc"));
             } else if (filterType === 'pick' && filterDate) {
@@ -514,10 +513,20 @@
                 let rawData = [];
                 snap.forEach(doc => rawData.push(doc.data()));
 
-                const uniquePCData = Array.from(new Map(rawData.map(item => [item.Nomor_Komputer, item])).values());
+                // Query Firebase sudah mengurutkan data dari login terbaru ke terlama.
+                // Denah hanya memerlukan login pertama (terbaru) pada setiap PC,
+                // sedangkan mode daftar dan cetak tetap memakai seluruh riwayat.
+                const seenPCs = new Set();
+                const uniquePCData = rawData.filter(item => {
+                    const key = String(item.Nomor_Komputer || '').toUpperCase().trim();
+                    if (!key || seenPCs.has(key)) return false;
+                    seenPCs.add(key);
+                    return true;
+                });
                 uniquePCData.sort((a, b) => a.Nomor_Komputer.localeCompare(b.Nomor_Komputer, undefined, {numeric: true}));
 
                 document.getElementById('today-count').innerText = uniquePCData.length;
+                list.dataset.sessionCount = rawData.length;
 
                 // --- PILIHAN RENDERING BERDASARKAN MODE AKTIF ---
                 if (window.currentViewMode === 'meja') {
@@ -675,10 +684,10 @@
                     //  MODE LIST (SISTEM LIST LAMA HISTORIS)
                     // ==========================================
                     
-                    if(uniquePCData.length === 0) {
+                    if(rawData.length === 0) {
                         list.innerHTML = `<div class="p-20 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest no-print">Belum ada aktivitas di periode ini.</div>`;
                     } else {
-                        uniquePCData.forEach(d => {
+                        rawData.forEach(d => {
                             const div = document.createElement('div');
                             div.className = "data-item grid grid-cols-[80px_1fr_110px] md:grid-cols-[100px_1fr_140px] items-center p-4 md:px-8 gap-4 md:gap-6 no-print";
                             div.innerHTML = `
@@ -704,8 +713,8 @@
                 const printContainer = document.createElement('div');
                 printContainer.className = "print-only w-full mt-4";
                 
-                if (uniquePCData.length === 0) {
-                    printContainer.innerHTML = `<div class="text-center text-sm py-8 font-bold uppercase text-black">Tidak ada aktivitas PC aktif.</div>`;
+                if (rawData.length === 0) {
+                    printContainer.innerHTML = `<div class="text-center text-sm py-8 font-bold uppercase text-black">Tidak ada aktivitas PC pada periode ini.</div>`;
                 } else {
                     let tableHTML = `
                         <table class="w-full border-collapse border border-slate-300 text-[11px] text-left">
@@ -721,7 +730,7 @@
                             <tbody>
                     `;
                     
-                    uniquePCData.forEach(d => {
+                    rawData.forEach(d => {
                         tableHTML += `
                             <tr class="border-b border-slate-300 text-black">
                                 <td class="p-2.5 border border-slate-300 font-bold">PC ${escapeHtml(d.Nomor_Komputer)}</td>
