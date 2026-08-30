@@ -1,5 +1,5 @@
 // Nama memori penyimpanan (cache)
-const CACHE_NAME = 'dpib-hub-cache-v1';
+const CACHE_NAME = 'dpib-hub-cache-v2';
 
 // Daftar aset penting yang perlu disimpan untuk cadangan offline
 const ASSETS_TO_CACHE = [
