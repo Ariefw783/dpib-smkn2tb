@@ -5,7 +5,7 @@
 // Semester Ganjil Tahun Pelajaran 2026/2027
 // ============================================================
 
-const TEACHERS = [
+const ALL_TEACHERS = [
     {
         name: "HARYADI, S.T.",
         schedule: {
@@ -168,3 +168,35 @@ const TEACHERS = [
         }
     }
 ];
+
+// ============================================================
+// PENGATURAN JADWAL KELAS XII
+// true  = jadwal kelas XII dinonaktifkan selama PKL
+// false = seluruh jadwal kelas XII diaktifkan kembali
+// ============================================================
+
+const DISABLE_XII_DURING_PKL = true;
+
+const TEACHERS = ALL_TEACHERS
+    .map(teacher => {
+        const activeSchedule = {};
+
+        Object.entries(teacher.schedule).forEach(([day, slots]) => {
+            const filteredSlots = slots.filter(slot => {
+                const isClassXII = slot.class.startsWith("XII ");
+
+                return !(DISABLE_XII_DURING_PKL && isClassXII);
+            });
+
+            if (filteredSlots.length > 0) {
+                activeSchedule[day] = filteredSlots;
+            }
+        });
+
+        return {
+            ...teacher,
+            schedule: activeSchedule
+        };
+    })
+    // Guru tanpa jadwal aktif tidak ditampilkan sementara
+    .filter(teacher => Object.keys(teacher.schedule).length > 0);
