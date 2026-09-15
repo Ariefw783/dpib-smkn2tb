@@ -1,95 +1,170 @@
-// MASTER DATA GURU & JADWAL
-// Catatan: Jadwal Tejo Siswanto telah digabungkan ke Mayeza Eka Putra
+// ============================================================
+// MASTER DATA GURU DAN JADWAL MENGAJAR
+// SMK NEGERI 2 TERBANGGI BESAR
+// Teknik Konstruksi dan Bangunan
+// Semester Ganjil Tahun Pelajaran 2026/2027
+// ============================================================
+
 const TEACHERS = [
-    { 
-        name: "AGUS WARDOYO, S.T.", 
-        schedule: { 
-            "Senin": [{ hours: [1, 5], class: "XI TKP 1" }], 
-            "Kamis": [{ hours: [1, 5], class: "XII TKP 2" }], 
-            "Jumat": [{ hours: [1, 5], class: "XII TKP 1" }] 
-        } 
-    },
-    { 
-        name: "HARYADI, S.T.", 
-        schedule: { 
-            "Senin": [{ hours: [6, 10], class: "XII TKP 2" }], 
-            "Selasa": [{ hours: [1, 5], class: "XII DPIB 1" }, { hours: [7, 10], class: "XI DPIB 2" }], 
-            "Rabu": [{ hours: [1, 5], class: "XII TKP 1" }, { hours: [7, 10], class: "XI DPIB 1" }], 
-            "Kamis": [{ hours: [1, 5], class: "XII DPIB 2" }] 
-        } 
-    },
-    { 
-        name: "MAYEZA EKA PUTRA, S.Ars.", 
-        schedule: { 
+    {
+        name: "HARYADI, S.T.",
+        schedule: {
             "Senin": [
-                { hours: [1, 12], class: "X TKP 1" } // Gabungan 1-8 (Mayeza) & 9-12 (Tejo)
-            ], 
+                { hours: [1, 4], class: "XII DPIB 2" },
+                { hours: [7, 10], class: "XII TKP" }
+            ],
+            "Selasa": [
+                { hours: [1, 8], class: "XI DPIB 2" }
+            ],
             "Rabu": [
-                { hours: [1, 4], class: "XI DPIB 2" },
-                { hours: [6, 9], class: "XII TKP 1" } // Pindahan dari Tejo
-            ], 
+                { hours: [5, 8], class: "XII DPIB 1" }
+            ],
             "Jumat": [
-                { hours: [1, 4], class: "XII TKP 2" }, // Pindahan dari Tejo
+                { hours: [1, 8], class: "XI DPIB 1" }
+            ]
+        }
+    },
+
+    {
+        name: "MAYEZA EKA PUTRA, S.Ars.",
+        schedule: {
+            "Senin": [
+                { hours: [5, 6], class: "X TKP" }
+            ],
+            "Selasa": [
+                { hours: [1, 6], class: "XI DPIB 1" }
+            ],
+            "Rabu": [
+                { hours: [1, 6], class: "X TKP" }
+            ],
+            "Kamis": [
+                { hours: [1, 4], class: "XI TKP" }
+            ],
+            "Jumat": [
+                { hours: [1, 6], class: "XI DPIB 2" }
+            ]
+        }
+    },
+
+    {
+        name: "NITA YULIANTI, S.T.",
+        schedule: {
+            "Senin": [
+                { hours: [1, 4], class: "X TKP" }
+            ],
+            "Selasa": [
+                { hours: [1, 8], class: "XI TKP" }
+            ],
+            "Rabu": [
+                { hours: [1, 6], class: "XII TKP" }
+            ],
+            "Jumat": [
+                { hours: [1, 6], class: "XII TKP" }
+            ]
+        }
+    },
+
+    {
+        name: "SAYIDATI NISA, S.Ars.",
+        schedule: {
+            "Senin": [
+                { hours: [1, 5], class: "XI DPIB 1" }
+            ],
+            "Selasa": [
+                { hours: [1, 6], class: "X DPIB 1" }
+            ],
+            "Rabu": [
+                { hours: [1, 6], class: "X DPIB 2" }
+            ],
+            "Kamis": [
+                { hours: [1, 5], class: "XI DPIB 2" }
+            ]
+        }
+    },
+
+    {
+        name: "SIGIT KRISTIAWAN, S.T.",
+        schedule: {
+            "Senin": [
+                { hours: [1, 10], class: "XII DPIB 1" }
+            ],
+            "Rabu": [
+                { hours: [1, 4], class: "XI DPIB 2" }
+            ],
+            "Kamis": [
+                { hours: [1, 10], class: "XII DPIB 2" }
+            ]
+        }
+    },
+
+    {
+        name: "SLAMET HARYANTO, S.T.",
+        schedule: {
+            "Jumat": [
+                { hours: [6, 10], class: "XI TKP" }
+            ]
+        }
+    },
+
+    {
+        name: "SUDARSONO, S.T., M.M.Pd.",
+        schedule: {
+            "Selasa": [
+                { hours: [7, 10], class: "XI DPIB 1" }
+            ],
+            "Jumat": [
+                { hours: [7, 10], class: "XI DPIB 2" }
+            ]
+        }
+    },
+
+    {
+        name: "SURATMAN, S.T.",
+        schedule: {
+            "Senin": [
+                { hours: [1, 10], class: "XI TKP" }
+            ],
+            "Selasa": [
+                { hours: [1, 10], class: "XII TKP" }
+            ],
+            "Kamis": [
+                { hours: [1, 5], class: "XII TKP" }
+            ]
+        }
+    },
+
+    {
+        name: "UNTUNG HERMAWAN, S.T.",
+        schedule: {
+            "Senin": [
+                { hours: [5, 8], class: "XII DPIB 2" }
+            ],
+            "Rabu": [
+                { hours: [1, 4], class: "XII DPIB 1" },
                 { hours: [6, 9], class: "XI DPIB 1" }
-            ] 
-        } 
+            ],
+            "Kamis": [
+                { hours: [1, 6], class: "X DPIB 2" }
+            ],
+            "Jumat": [
+                { hours: [1, 6], class: "X DPIB 1" }
+            ]
+        }
     },
-    { 
-        name: "NITA YULIANTI, S.T.", 
-        schedule: { 
-            "Selasa": [{ hours: [4, 11], class: "XII TKP 1" }], 
-            "Rabu": [{ hours: [1, 8], class: "XII TKP 2" }], 
-            "Jumat": [{ hours: [1, 10], class: "XI TKP 1" }] 
-        } 
-    },
-    { 
-        name: "SIGIT KRISTIAWAN, S.T.", 
-        schedule: { 
-            "Senin": [{ hours: [1, 10], class: "XI DPIB 2" }], 
-            "Rabu": [{ hours: [1, 5], class: "XII DPIB 1" }], 
-            "Kamis": [{ hours: [1, 10], class: "XI DPIB 1" }], 
-            "Jumat": [{ hours: [1, 5], class: "XII DPIB 2" }] 
-        } 
-    },
-    { 
-        name: "SLAMET HARYANTO, S.T.", 
-        schedule: { 
-            "Selasa": [{ hours: [1, 8], class: "XI TKP 1" }] 
-        } 
-    },
-    { 
-        name: "SUDARSONO, S.T., M.M.Pd.", 
-        schedule: { 
-            "Selasa": [{ hours: [3, 6], class: "XI DPIB 2" }], 
-            "Rabu": [{ hours: [3, 6], class: "XI DPIB 1" }] 
-        } 
-    },
-    { 
-        name: "SURATMAN, S.T.", 
-        schedule: { 
-            "Senin": [{ hours: [6, 9], class: "XI TKP 1" }, { hours: [1, 5], class: "XII TKP 2" }], 
-            "Selasa": [{ hours: [6, 10], class: "XII DPIB 1" }], 
-            "Rabu": [{ hours: [5, 9], class: "XI DPIB 2" }], 
-            "Kamis": [{ hours: [6, 10], class: "XII DPIB 2" }, { hours: [1, 5], class: "XII TKP 1" }], 
-            "Jumat": [{ hours: [1, 5], class: "XI DPIB 1" }] 
-        } 
-    },
-    { 
-        name: "UNTUNG HERMAWAN, S.T.", 
-        schedule: { 
-            "Selasa": [{ hours: [1, 12], class: "X DPIB 1" }], 
-            "Rabu": [{ hours: [6, 9], class: "XII DPIB 1" }], 
-            "Kamis": [{ hours: [1, 12], class: "X DPIB 2" }], 
-            "Jumat": [{ hours: [6, 9], class: "XII DPIB 2" }] 
-        } 
-    },
-    { 
-        name: "YULIDAR EFENDI, S.T.", 
-        schedule: { 
-            "Senin": [{ hours: [1, 12], class: "XII DPIB 1" }], 
-            "Rabu": [{ hours: [1, 12], class: "XII DPIB 2" }], 
-            "Kamis": [{ hours: [6, 9], class: "XII TKP 2" }], 
-            "Jumat": [{ hours: [6, 9], class: "XII TKP 1" }] 
-        } 
+
+    {
+        name: "YULIDAR EFFENDI, S.T.",
+        schedule: {
+            "Selasa": [
+                { hours: [3, 9], class: "XII DPIB 1" }
+            ],
+            "Rabu": [
+                { hours: [3, 9], class: "XII DPIB 2" }
+            ],
+            "Jumat": [
+                { hours: [1, 5], class: "XII DPIB 1" },
+                { hours: [6, 10], class: "XII DPIB 2" }
+            ]
+        }
     }
 ];
